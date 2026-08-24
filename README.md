@@ -1,0 +1,101 @@
+# Young Women Newsletter
+
+A monthly newsletter for young women ages 12–18. One shared link that several
+leaders can edit, and a two-page 8.5×11 sheet that prints or saves as a PDF
+straight from the browser.
+
+September 2026 is filled in from the Church's youth curriculum outline —
+*You Are Blessed by Priesthood Keys and Authority* (For the Strength of Youth,
+46–49).
+
+**Setup instructions live in [SETUP.md](SETUP.md).**
+
+---
+
+## What it does
+
+- **One link to share.** Anyone with the link reads the current issue. No
+  account, no login.
+- **Several editors.** Press *Edit sections*, enter the shared passcode, and
+  edit any of nine sections. Each section saves on its own, so two people
+  working at the same time never overwrite each other.
+- **Who wrote what.** Every section shows the name of whoever last changed it,
+  right on the printed page.
+- **Prints properly.** *Print / Save PDF* produces exactly two 8.5×11 pages,
+  designed to be run double-sided.
+- **Month by month.** The arrows step to any month. Each month is its own
+  issue; past months stay readable at their own link.
+
+## The nine sections
+
+| Page | Section | Who usually owns it |
+|---|---|---|
+| 1 | Header & Masthead | set once, then left alone |
+| 1 | Monthly Theme | from the For the Strength of Youth chapter |
+| 1 | Monthly Scriptures | featured verse, a verse to memorize, supporting refs |
+| 1 | Weekly Lessons | one card per Sunday |
+| 1 | Leader's Note & Service | the presidency |
+| 2 | Member Highlight | one young woman each month |
+| 2 | Activity Spotlight | the midweek activity |
+| 2 | Calendar & Birthdays | dates and birthdays |
+| 2 | Fun & Personal Development | quote, a question from the girls, a challenge |
+
+The structure is identical every month, so the girls always know where to look.
+Only the contents change.
+
+## Starting a new month
+
+Step the month arrow forward. The layout and section structure carry over; the
+fields start empty apart from the month label. Fill them in from that month's
+curriculum outline.
+
+To pre-fill a month with real curriculum content the way September is, add a
+file next to `src/data/september2026.js` and register it in the `SEEDS` map in
+`src/data/issues.js`.
+
+## Keeping it on two pages
+
+Each sheet clips anything past 11 inches. If a section grows too long, an
+orange warning appears under the page telling you how far over it runs — trim
+before printing. The warning is on screen only; it never prints.
+
+## Printing
+
+Press **Print / Save PDF**, then in the browser's print dialog:
+
+- Destination: your printer, or *Save as PDF*
+- Paper: **Letter**
+- Margins: **None**
+- **Background graphics: on** — without this the coloured cards print blank
+
+Two-sided, flip on long edge, gives you the finished handout.
+
+## Design
+
+The look follows the Clay design system: cream canvas, Inter at weight 500 with
+tight tracking for display type, saturated single-colour feature cards (peach,
+teal, lavender, ochre, pink, mint) that never repeat back to back, and generous
+corner radii.
+
+Two things are worth knowing if it prints heavier than you want:
+
+- `--canvas` in `src/styles/newsletter.css` controls the cream page flood. Set
+  it to `#ffffff` for plain white paper.
+- Any card fill can be swapped to `var(--surface-card)` for a much lighter
+  cream card instead of a saturated one.
+
+## How it is built
+
+- **Vite + React**, no UI framework.
+- **Netlify Function** (`netlify/functions/newsletter.js`) holds the passcode
+  and the Supabase service key. Neither ever reaches the browser.
+- **Supabase** stores each month as one JSON row, plus a history table holding
+  the previous version of every section that gets edited.
+- If the function is unreachable, the app quietly falls back to saving in that
+  browser's local storage and says so in the toolbar. Nothing is lost; it just
+  is not shared until the backend is connected.
+
+## A note on the member highlight
+
+Everyone featured is a minor. Get the young woman's permission and her parents'
+before publishing her name, photo, or story on a public link.

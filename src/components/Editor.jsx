@@ -1,0 +1,343 @@
+import React, { useEffect, useMemo, useState } from 'react'
+import { SECTIONS, SECTION_MAP, emptyValue } from '../data/schema'
+
+export default function Editor({
+  open,
+  onClose,
+  issue,
+  meta,
+  monthLabel,
+  mode,
+  unlocked,
+  editorName,
+  onUnlock,
+  onSaveSection,
+}) {
+  const [activeId, setActiveId] = useState(null)
+  const [draft, setDraft] = useState(null)
+  const [saving, setSaving] = useState(false)
+  const [message, setMessage] = useState(null)
+
+  // Start each visit on the section list.
+  useEffect(() => {
+    if (!open) {
+      setActiveId(null)
+      setDraft(null)
+      setMessage(null)
+    }
+  }, [open])
+
+  const section = activeId ? SECTION_MAP[activeId] : null
+
+  const dirty = useMemo(() => {
+    if (!section || !draft) return false
+    return JSON.stringify(draft) !== JSON.stringify(issue[section.id] ?? {})
+  }, [draft, issue, section])
+
+  function openSection(id) {
+    setActiveId(id)
+    // Deep copy so editing never mutates what is on screen until you save.
+    setDraft(JSON.parse(JSON.stringify(issue[id] ?? {})))
+    setMessage(null)
+  }
+
+  function closeSection() {
+    setActiveId(null)
+    setDraft(null)
+    setMessage(null)
+  }
+
+  function setField(key, value) {
+    setDraft((d) => ({ ...d, [key]: value }))
+  }
+
+  async function handleSave() {
+    setSaving(true)
+    setMessage(null)
+    const result = await onSaveSection(section.id, draft)
+    setSaving(false)
+    if (result.ok) {
+      setMessage({
+        kind: 'ok',
+        text:
+          result.mode === 'local'
+            ? `Saved to this browser. ${section.label} will not reach anyone else until the backend is connected.`
+            : `Saved. ${section.label} is live for everyone with the link.`,
+      })
+    } else {
+      setMessage({ kind: 'error', text: result.error || 'Could not save.' })
+    }
+  }
+
+  function handleClose() {
+    if (dirty && !window.confirm('You have unsaved changes in this section. Close anyway?')) {
+      return
+    }
+    onClose()
+  }
+
+  if (!open) return null
+
+  return (
+    <>
+      <div className="drawer-backdrop no-print" onClick={handleClose} />
+      <aside className="drawer no-print" role="dialog" aria-label="Edit newsletter">
+        <div className="drawer-head">
+          <div style={{ flex: 1 }}>
+            <h2>{section ? section.label : 'Edit this issue'}</h2>
+            <p>
+              {section
+                ? section.hint
+                : `${monthLabel} · pick a section to edit. Each one saves on its own, so several people can work at the same time.`}
+            </p>
+          </div>
+          <button className="btn-icon" onClick={handleClose} aria-label="Close editor">
+            ✕
+          </button>
+        </div>
+
+        <div className="drawer-body">
+          {!unlocked ? (
+            <UnlockForm onUnlock={onUnlock} mode={mode} />
+          ) : message ? (
+            <div className={`notice ${message.kind}`}>{message.text}</div>
+          ) : null}
+
+          {unlocked && !section && (
+            <div className="section-list">
+              {SECTIONS.map((s) => {
+                const entry = meta?.[s.id]
+                return (
+                  <button key={s.id} className="section-btn" onClick={() => openSection(s.id)}>
+                    <span className="page-chip">P{s.page}</span>
+                    <span>
+                      <span className="section-name">{s.label}</span>
+                      <span className="section-meta">
+                        {entry?.by
+                          ? `Last edited by ${entry.by}${
+                              entry.at
+                                ? ' · ' +
+                                  new Date(entry.at).toLocaleDateString(undefined, {
+                                    month: 'short',
+                                    day: 'numeric',
+                                  })
+                                : ''
+                            }`
+                          : s.hint}
+                      </span>
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          )}
+
+          {unlocked && section && draft && (
+            <div>
+              {section.fields.map((field) => (
+                <Field
+                  key={field.key}
+                  field={field}
+                  value={draft[field.key] ?? emptyValue(field)}
+                  onChange={(v) => setField(field.key, v)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {unlocked && (
+          <div className="drawer-foot">
+            {section ? (
+              <>
+                <button className="btn" onClick={closeSection} disabled={saving}>
+                  ← All sections
+                </button>
+                <span className="spacer" />
+                <span className="saved-note">{dirty ? 'Unsaved changes' : 'Up to date'}</span>
+                <button className="btn btn-primary" onClick={handleSave} disabled={saving || !dirty}>
+                  {saving ? 'Saving…' : 'Save section'}
+                </button>
+              </>
+            ) : (
+              <>
+                <span className="saved-note">
+                  Editing as <strong>{editorName || 'Someone'}</strong>
+                </span>
+                <span className="spacer" />
+                <button className="btn" onClick={handleClose}>
+                  Done
+                </button>
+              </>
+            )}
+          </div>
+        )}
+      </aside>
+    </>
+  )
+}
+
+// ---------------------------------------------------------------- unlock
+
+function UnlockForm({ onUnlock, mode }) {
+  const [name, setName] = useState('')
+  const [passcode, setPasscode] = useState('')
+  const [error, setError] = useState(null)
+  const [busy, setBusy] = useState(false)
+
+  async function submit(e) {
+    e.preventDefault()
+    setBusy(true)
+    setError(null)
+    const result = await onUnlock({ name: name.trim(), passcode })
+    setBusy(false)
+    if (!result.ok) setError(result.error)
+  }
+
+  return (
+    <form className="unlock" onSubmit={submit}>
+      <p>
+        Enter the shared passcode to edit this month’s newsletter. Your name is shown next to the
+        sections you change, so everyone can see who wrote what.
+      </p>
+
+      {error && <div className="notice error">{error}</div>}
+
+      <div className="field">
+        <label htmlFor="editor-name">Your name</label>
+        <input
+          id="editor-name"
+          className="input"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Sister Reid"
+          autoComplete="name"
+          required
+        />
+      </div>
+
+      <div className="field">
+        <label htmlFor="editor-pass">Shared passcode</label>
+        <input
+          id="editor-pass"
+          className="input"
+          type="password"
+          value={passcode}
+          onChange={(e) => setPasscode(e.target.value)}
+          autoComplete="current-password"
+          required
+        />
+      </div>
+
+      <button className="btn btn-gold" type="submit" disabled={busy}>
+        {busy ? 'Checking…' : 'Unlock editing'}
+      </button>
+
+      {mode === 'local' && (
+        <div className="notice info" style={{ marginTop: '0.8rem' }}>
+          Running without a backend, so changes save to this browser only. Once Supabase and Netlify
+          are connected, edits are shared with everyone.
+        </div>
+      )}
+    </form>
+  )
+}
+
+// ---------------------------------------------------------------- fields
+
+function Field({ field, value, onChange }) {
+  if (field.type === 'textarea') {
+    return (
+      <div className="field">
+        <label htmlFor={`f-${field.key}`}>{field.label}</label>
+        <textarea
+          id={`f-${field.key}`}
+          className="textarea"
+          rows={field.rows || 3}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+        />
+      </div>
+    )
+  }
+
+  if (field.type === 'list') {
+    const items = Array.isArray(value) ? value : []
+    return (
+      <div className="field">
+        <span className="field-label">{field.label}</span>
+        {items.map((item, i) => (
+          <div key={i} className="list-row">
+            <textarea
+              className="textarea"
+              rows={2}
+              value={item}
+              onChange={(e) => onChange(items.map((v, j) => (j === i ? e.target.value : v)))}
+            />
+            <button
+              type="button"
+              className="btn-remove"
+              onClick={() => onChange(items.filter((_, j) => j !== i))}
+            >
+              Remove
+            </button>
+          </div>
+        ))}
+        <button type="button" className="btn-add" onClick={() => onChange([...items, ''])}>
+          + Add
+        </button>
+      </div>
+    )
+  }
+
+  if (field.type === 'objectList') {
+    const items = Array.isArray(value) ? value : []
+    const blank = Object.fromEntries(field.fields.map((f) => [f.key, '']))
+    return (
+      <div className="field">
+        <span className="field-label">{field.label}</span>
+        {items.map((item, i) => (
+          <div key={i} className="object-item">
+            <div className="object-item-head">
+              <span>
+                {field.itemLabel || 'Item'} {i + 1}
+              </span>
+              <button
+                type="button"
+                className="btn-remove"
+                onClick={() => onChange(items.filter((_, j) => j !== i))}
+              >
+                Remove
+              </button>
+            </div>
+            {field.fields.map((sub) => (
+              <Field
+                key={sub.key}
+                field={sub}
+                value={item?.[sub.key] ?? ''}
+                onChange={(v) =>
+                  onChange(items.map((row, j) => (j === i ? { ...row, [sub.key]: v } : row)))
+                }
+              />
+            ))}
+          </div>
+        ))}
+        <button type="button" className="btn-add" onClick={() => onChange([...items, { ...blank }])}>
+          + Add {field.itemLabel ? field.itemLabel.toLowerCase() : 'item'}
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="field">
+      <label htmlFor={`f-${field.key}`}>{field.label}</label>
+      <input
+        id={`f-${field.key}`}
+        className="input"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </div>
+  )
+}
