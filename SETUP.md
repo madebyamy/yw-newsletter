@@ -1,7 +1,10 @@
-# Setup — one time, about 20 minutes
+# Setup — about 10 minutes left
 
-You need three free accounts: GitHub (code), Supabase (where the newsletter is
-stored), and Netlify (the public link). Do them in this order.
+**GitHub is already done.** The code is pushed to
+<https://github.com/madebyamy/yw-newsletter> on the `main` branch.
+
+Two steps remain: Supabase (where the newsletter is stored) and Netlify (the
+public link).
 
 ---
 
@@ -24,23 +27,7 @@ stored), and Netlify (the public link). Do them in this order.
 
 ---
 
-## 2. GitHub — the code
-
-From this folder:
-
-```bash
-git remote add origin https://github.com/YOUR-USERNAME/yw-newsletter.git
-```
-
-```bash
-git push -u origin main
-```
-
-(Create the empty repo on github.com first — no README, no .gitignore.)
-
----
-
-## 3. Netlify — the link
+## 2. Netlify — the link
 
 1. Go to **netlify.com** → **Add new site** → **Import an existing project** →
    **GitHub** → pick `yw-newsletter`.
