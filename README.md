@@ -70,6 +70,41 @@ Press **Print / Save PDF**, then in the browser's print dialog:
 
 Two-sided, flip on long edge, gives you the finished handout.
 
+## Two links: readers and leaders
+
+| Link | Who | What they get |
+|---|---|---|
+| `…/?month=2026-09` | the young women | The newsletter. No Edit button. |
+| `…/?month=2026-09&edit=1` | leaders | The same, plus **Edit sections**. |
+
+**Copy share link** always produces the reader link, even while you are on the
+leader one — so forwarding it can never hand out editing. **Copy leader link**
+is the one to send other leaders.
+
+Opening a leader link remembers it on that device, so leaders only need it
+once. **Hide editing here**, in the editor footer, forgets it again — useful
+if you hand your phone to one of the girls.
+
+This is tidiness, not security. The passcode is what actually protects
+editing, and it is checked on the server, never in the browser.
+
+## Publishing a month
+
+A month is a **draft** until you publish it, and drafts are invisible on the
+reader link. Leaders always see everything, so next month can be built in the
+open while the girls still read the current one.
+
+**Publish to the Young Women** switches it on. The toolbar shows *Draft* or
+*Published* while you work.
+
+For readers, the month arrows step only between published issues. Opening a
+draft month by URL sends them to the newest published one instead, and before
+anything is published at all they see a short "No issues yet" note rather than
+a blank page.
+
+> Because a month is unpublished until you say otherwise, **September needs
+> publishing once** — otherwise the girls will see "No issues yet".
+
 ## Turning blocks off for a month
 
 **Show or Hide Blocks** ticks any of the eight blocks off for the month you are

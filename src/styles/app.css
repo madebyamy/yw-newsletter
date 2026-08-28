@@ -569,3 +569,28 @@ body {
   .toolbar .btn { flex: 1 1 auto; }
   .drawer { width: 100vw; }
 }
+
+/* --- publish state ------------------------------------------------------ */
+
+.publish-state {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: var(--r-md);
+  margin-bottom: 16px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.publish-state strong {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.publish-state.is-live { background: var(--mint); color: var(--teal); }
+.publish-state.is-draft { background: var(--surface-card); color: var(--muted); }
+.publish-state.is-draft strong { color: var(--ink); }
+
+.loading .link-btn { font-size: 16px; }
+.loading p { margin: 0 0 8px; }

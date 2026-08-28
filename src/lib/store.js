@@ -66,6 +66,29 @@ export async function loadIssue(monthKey) {
   }
 }
 
+// Which months exist and which are finished. Readers only ever see the
+// published ones; leaders see everything.
+export async function listMonths() {
+  const result = await call('GET', { path: '?list=1' })
+  if (result.kind === 'ok' && Array.isArray(result.json.months)) {
+    return { ok: true, months: result.json.months }
+  }
+  // No backend: fall back to whatever this browser has stored locally.
+  const months = []
+  try {
+    for (const key of Object.keys(localStorage)) {
+      if (!key.startsWith(LOCAL_PREFIX)) continue
+      const month = key.slice(LOCAL_PREFIX.length)
+      if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) continue
+      const entry = readLocal(month)
+      months.push({ month, published: entry?.raw?.publish?.published === true })
+    }
+  } catch {
+    // Storage unavailable — treat it as no months.
+  }
+  return { ok: true, months: months.sort((a, b) => b.month.localeCompare(a.month)) }
+}
+
 // ------------------------------------------------------------------ auth
 
 export async function verifyPasscode(passcode) {

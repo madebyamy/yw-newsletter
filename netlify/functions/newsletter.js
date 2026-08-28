@@ -32,8 +32,20 @@ async function handleGet(event) {
   const params = event.queryStringParameters || {}
 
   if (params.list) {
-    const rows = await sb('newsletters?select=month_key,updated_at,updated_by&order=month_key.desc')
-    return reply(200, { ok: true, months: rows })
+    // Pull the publish flag out of the JSON rather than whole rows — the data
+    // column can hold a background image, which has no business in a listing.
+    const rows = await sb(
+      'newsletters?select=month_key,updated_at,updated_by,publish:data->publish&order=month_key.desc',
+    )
+    return reply(200, {
+      ok: true,
+      months: rows.map((r) => ({
+        month: r.month_key,
+        updatedAt: r.updated_at,
+        updatedBy: r.updated_by,
+        published: r.publish?.published === true,
+      })),
+    })
   }
 
   const month = params.month

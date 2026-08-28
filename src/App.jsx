@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useSta
 import { PageOne, PageTwo } from './components/Newsletter'
 import Editor from './components/Editor'
 import { SEEDS, currentMonthKey, monthLabel, normalizeIssue, shiftMonth } from './data/issues'
-import { loadIssue, saveSection, verifyPasscode, MODE } from './lib/store'
+import { listMonths, loadIssue, saveSection, verifyPasscode, MODE } from './lib/store'
 import './styles/app.css'
 import './styles/newsletter.css'
 
@@ -12,6 +12,26 @@ const PAGE_H = 11 * 96
 // the page reflows instead of scaling. Laptop and print are unaffected.
 const PHONE_MAX = 820
 const PHONE_QUERY = `(max-width: ${PHONE_MAX}px)`
+const LEADER_KEY = 'yw-newsletter:leader'
+
+// The Edit button is hidden unless this browser is a leader's. That is a
+// tidiness measure, not a security one — the passcode in the Netlify function
+// is what actually protects editing, and it is checked server-side.
+function initialLeaderMode() {
+  if (new URLSearchParams(window.location.search).has('edit')) {
+    try {
+      localStorage.setItem(LEADER_KEY, 'true')
+    } catch {
+      // Private browsing — the flag just will not persist past this visit.
+    }
+    return true
+  }
+  try {
+    return localStorage.getItem(LEADER_KEY) === 'true'
+  } catch {
+    return false
+  }
+}
 const NAME_KEY = 'yw-newsletter:editor-name'
 
 function initialMonth() {
@@ -37,8 +57,40 @@ export default function App() {
   const [editorName, setEditorName] = useState(() => localStorage.getItem(NAME_KEY) || '')
   const passcodeRef = useRef('')
 
-  const [copied, setCopied] = useState(false)
+  const [copied, setCopied] = useState(null)
   const [preview, setPreview] = useState(null)
+  const [leaderMode, setLeaderMode] = useState(initialLeaderMode)
+  const [months, setMonths] = useState(null)
+
+  // The months a reader is allowed to reach. Leaders navigate freely so they
+  // can build next month before anyone else sees it.
+  const publishedMonths = useMemo(
+    () => (months || []).filter((m) => m.published).map((m) => m.month).sort(),
+    [months],
+  )
+
+  const isPublished = useMemo(
+    () => publishedMonths.includes(monthKey),
+    [publishedMonths, monthKey],
+  )
+
+  const refreshMonths = useCallback(async () => {
+    const result = await listMonths()
+    if (result.ok) setMonths(result.months)
+  }, [])
+
+  useEffect(() => {
+    refreshMonths()
+  }, [refreshMonths])
+
+  // A reader who lands on an unfinished month is moved to the newest finished
+  // one rather than being shown a blank page.
+  useEffect(() => {
+    if (leaderMode || months === null) return
+    if (publishedMonths.length === 0) return
+    if (publishedMonths.includes(monthKey)) return
+    setMonthKey(publishedMonths[publishedMonths.length - 1])
+  }, [leaderMode, months, publishedMonths, monthKey])
 
   const [isPhone, setIsPhone] = useState(
     () => typeof window !== 'undefined' && window.matchMedia(PHONE_QUERY).matches,
@@ -154,29 +206,78 @@ export default function App() {
         setPreview(null)
         setRaw(result.raw)
         if (result.mode) setMode(result.mode)
+        // Publishing changes which months readers can reach.
+        refreshMonths()
       }
       return result
     },
-    [monthKey, editorName],
+    [monthKey, editorName, refreshMonths],
   )
 
   const handlePreview = useCallback((sectionId, value) => {
     setPreview(sectionId ? { id: sectionId, value } : null)
   }, [])
 
-  async function copyLink() {
+  // `edit` is stripped from the reader link so passing it on never reveals
+  // the button, and added to the leader link so a new leader's device shows it.
+  function buildLink(forLeaders) {
     const url = new URL(window.location.href)
     url.searchParams.set('month', monthKey)
+    if (forLeaders) url.searchParams.set('edit', '1')
+    else url.searchParams.delete('edit')
+    return url.toString()
+  }
+
+  async function copyLink(forLeaders) {
+    const link = buildLink(forLeaders)
+    const which = forLeaders ? 'leader' : 'reader'
     try {
-      await navigator.clipboard.writeText(url.toString())
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2200)
+      await navigator.clipboard.writeText(link)
+      setCopied(which)
+      setTimeout(() => setCopied(null), 2200)
     } catch {
-      window.prompt('Copy this link:', url.toString())
+      window.prompt('Copy this link:', link)
     }
   }
 
+  function leaveLeaderMode() {
+    try {
+      localStorage.removeItem(LEADER_KEY)
+    } catch {
+      // Nothing stored to clear.
+    }
+    setLeaderMode(false)
+    setEditorOpen(false)
+    const url = new URL(window.location.href)
+    url.searchParams.delete('edit')
+    window.history.replaceState({}, '', url)
+  }
+
   // ---------------------------------------------------------------- render
+
+  // A reader must never see an unfinished month, even for the instant before
+  // the redirect above lands.
+  const readerBlocked = !leaderMode && months !== null && !isPublished
+
+  // Leaders step month by month through everything. Readers move between the
+  // published issues only, so an empty month is never reachable.
+  function canStep(delta) {
+    if (leaderMode) return true
+    if (publishedMonths.length === 0) return false
+    const i = publishedMonths.indexOf(monthKey)
+    if (i === -1) return true
+    return delta < 0 ? i > 0 : i < publishedMonths.length - 1
+  }
+
+  function step(delta) {
+    if (leaderMode) {
+      setMonthKey((m) => shiftMonth(m, delta))
+      return
+    }
+    const i = publishedMonths.indexOf(monthKey)
+    const next = i === -1 ? publishedMonths[publishedMonths.length - 1] : publishedMonths[i + delta]
+    if (next) setMonthKey(next)
+  }
 
   // Always set, even on a phone: the stylesheet's media query overrides both
   // with !important below 820px. Leaving them off when this state is briefly
@@ -196,7 +297,8 @@ export default function App() {
         <div className="month-nav">
           <button
             className="btn-icon"
-            onClick={() => setMonthKey((m) => shiftMonth(m, -1))}
+            onClick={() => step(-1)}
+            disabled={!canStep(-1)}
             aria-label="Previous month"
           >
             ‹
@@ -204,31 +306,69 @@ export default function App() {
           <span className="month-label">{monthLabel(monthKey)}</span>
           <button
             className="btn-icon"
-            onClick={() => setMonthKey((m) => shiftMonth(m, 1))}
+            onClick={() => step(1)}
+            disabled={!canStep(1)}
             aria-label="Next month"
           >
             ›
           </button>
         </div>
 
+        {leaderMode && (
+          <span className={`mode-pill ${isPublished ? 'cloud' : 'local'}`}>
+            <span className="dot" />
+            {isPublished ? 'Published' : 'Draft'}
+          </span>
+        )}
+
         <span className={`mode-pill ${mode === MODE.CLOUD ? 'cloud' : 'local'}`}>
           <span className="dot" />
           {mode === MODE.CLOUD ? 'Shared' : 'This browser only'}
         </span>
 
-        <button className="btn" onClick={copyLink}>
-          {copied ? 'Link copied' : 'Copy share link'}
+        <button className="btn" onClick={() => copyLink(false)}>
+          {copied === 'reader' ? 'Link copied' : 'Copy share link'}
         </button>
         <button className="btn btn-gold" onClick={() => window.print()}>
           Print / Save PDF
         </button>
-        <button className="btn btn-primary" onClick={() => setEditorOpen(true)}>
-          Edit sections
-        </button>
+
+        {leaderMode && (
+          <>
+            <button className="btn" onClick={() => copyLink(true)} title="Send this to other leaders">
+              {copied === 'leader' ? 'Leader link copied' : 'Copy leader link'}
+            </button>
+            <button className="btn btn-primary" onClick={() => setEditorOpen(true)}>
+              Edit sections
+            </button>
+          </>
+        )}
       </header>
 
-      {loading ? (
+      {loading || months === null ? (
         <div className="loading">Loading {monthLabel(monthKey)}…</div>
+      ) : readerBlocked ? (
+        <div className="loading">
+          {publishedMonths.length === 0 ? (
+            <>
+              <p>
+                <strong>No issues yet.</strong>
+              </p>
+              <p>The newsletter will appear here as soon as the first month is ready.</p>
+            </>
+          ) : (
+            <>
+              <p>
+                <strong>{monthLabel(monthKey)} is not ready yet.</strong>
+              </p>
+              <p>
+                <button className="link-btn" onClick={() => setMonthKey(publishedMonths[publishedMonths.length - 1])}>
+                  Read {monthLabel(publishedMonths[publishedMonths.length - 1])} instead
+                </button>
+              </p>
+            </>
+          )}
+        </div>
       ) : (
         <main className="preview" ref={previewRef}>
           {[PageOne, PageTwo].map((Page, i) => (
@@ -262,6 +402,7 @@ export default function App() {
         onUnlock={handleUnlock}
         onSaveSection={handleSaveSection}
         onPreview={handlePreview}
+        onLeaveLeaderMode={leaveLeaderMode}
       />
     </div>
   )

@@ -16,6 +16,13 @@ export const SECTIONS = [
     ],
   },
   {
+    id: 'publish',
+    label: 'Publish to the Young Women',
+    page: 0,
+    hint: 'Until this is switched on, only leaders can reach this month.',
+    fields: [{ key: 'published', label: 'Published', type: 'internal' }],
+  },
+  {
     id: 'visibility',
     label: 'Show or Hide Blocks',
     page: 0,

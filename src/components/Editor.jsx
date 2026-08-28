@@ -16,6 +16,7 @@ export default function Editor({
   onUnlock,
   onSaveSection,
   onPreview,
+  onLeaveLeaderMode,
 }) {
   const [activeId, setActiveId] = useState(null)
   const [draft, setDraft] = useState(null)
@@ -151,6 +152,9 @@ export default function Editor({
 
           {unlocked && section && draft && (
             <div>
+              {section.id === 'publish' && (
+                <PublishToggle draft={draft} onChange={setField} monthLabel={monthLabel} />
+              )}
               {section.id === 'visibility' && (
                 <VisibilityToggles draft={draft} onChange={setField} monthLabel={monthLabel} />
               )}
@@ -193,6 +197,19 @@ export default function Editor({
               <>
                 <span className="saved-note">
                   Editing as <strong>{editorName || 'Someone'}</strong>
+                  {onLeaveLeaderMode && (
+                    <>
+                      {' · '}
+                      <button
+                        type="button"
+                        className="link-btn"
+                        onClick={onLeaveLeaderMode}
+                        title="Hides the Edit button on this device until you open a leader link again"
+                      >
+                        Hide editing here
+                      </button>
+                    </>
+                  )}
                 </span>
                 <span className="spacer" />
                 <button className="btn" onClick={handleClose}>
@@ -204,6 +221,47 @@ export default function Editor({
         )}
       </aside>
     </>
+  )
+}
+
+// ---------------------------------------------------------------- publish
+
+// Until a month is published, the reader link cannot reach it at all. Leaders
+// always can, so a half-written issue can be worked on in the open.
+function PublishToggle({ draft, onChange, monthLabel }) {
+  const published = draft.published === true
+
+  return (
+    <div className="import-panel">
+      <span className="field-label">{monthLabel}</span>
+
+      <div className={`publish-state ${published ? 'is-live' : 'is-draft'}`}>
+        <strong>{published ? 'Published' : 'Draft'}</strong>
+        <span>
+          {published
+            ? 'The young women can open this month from the shared link.'
+            : 'Only leaders can see this month. It is not on the shared link.'}
+        </span>
+      </div>
+
+      <ul className="toggle-list">
+        <li>
+          <label className="toggle-row">
+            <input
+              type="checkbox"
+              checked={published}
+              onChange={() => onChange('published', !published)}
+            />
+            <span className="toggle-name">Show {monthLabel} to the young women</span>
+          </label>
+        </li>
+      </ul>
+
+      <p className="import-hint">
+        Publish once the month is ready. Unpublishing later hides it again — nothing is deleted, and
+        leaders keep full access either way.
+      </p>
+    </div>
   )
 }
 
