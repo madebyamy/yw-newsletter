@@ -273,7 +273,7 @@ export function PageOne({ issue, meta }) {
 
 // ---------------------------------------------------------------- page two
 
-export function PageTwo({ issue, meta, monthKey, leaderMode = false }) {
+export function PageTwo({ issue, meta, monthKey, leaderMode = false, viewOverride, onToggleCalendarView }) {
   const m = issue.masthead
   const h = issue.highlight
   const a = issue.activity
@@ -288,9 +288,11 @@ export function PageTwo({ issue, meta, monthKey, leaderMode = false }) {
   const sheet = sheetProps(issue)
   const hidden = hiddenSet(issue)
 
-  // The grid needs the full page width; the list is happy in a column.
-  const calendarAsGrid = !hidden.has('calendar') && cal?.view === 'calendar'
-  const calendarInColumn = !hidden.has('calendar') && !calendarAsGrid
+  const calendarShown = !hidden.has('calendar')
+  // The editor's choice is the default. A reader's own toggle overrides it for
+  // that person only — including their printout, so what they see is what they
+  // print — without changing the saved setting for anyone else.
+  const calendarView = viewOverride || (cal?.view === 'calendar' ? 'calendar' : 'list')
 
   return (
     <div className={sheet.className} style={sheet.style}>
@@ -374,83 +376,78 @@ export function PageTwo({ issue, meta, monthKey, leaderMode = false }) {
       </section>
       )}
 
-      {/* The month grid needs the full width to be readable, so in calendar
-          view it becomes its own band and only "For You" stays in a column. */}
-      {calendarAsGrid && (
-        <section className="calendar-month">
-          <SectionHead title="Calendar" meta={meta} id="calendar" />
-          <MonthCalendar monthKey={monthKey} events={events} birthdays={birthdays} />
 
-          {/* On a phone the cells are too narrow for names, so the grid shows
-              dots and this list carries them. Hidden on desktop and in print,
-              where the names already fit inside the cells. */}
-          {events.length > 0 && (
-            <div className="cal-phone-list">
-              {events.map((e, i) => (
-                <div key={i} className="cal-row">
-                  <span className="cal-date">{formatDate(e.date)}</span>
-                  <span>
-                    <span className="cal-title">{e.title}</span>
-                    {(e.time || e.detail) && (
-                      <>
-                        {' '}
-                        <span className="cal-detail">
-                          — {[e.time && formatTime(e.time), e.detail].filter(Boolean).join(' · ')}
-                        </span>
-                      </>
-                    )}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {birthdays.length > 0 && (
-            <div className="birthdays">
-              <div className="eyebrow">Happy Birthday</div>
-              <div className="birthday-list">
-                {birthdays.map((b, i) => (
-                  <span key={i}>
-                    <strong>{formatDate(b.date)}</strong> {b.name}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-        </section>
-      )}
-
-      {!(calendarInColumn === false && hidden.has('fun')) && (
+      {!(calendarShown === false && hidden.has('fun')) && (
       <section
-        className={`columns${!calendarInColumn || hidden.has('fun') ? ' columns-single' : ''}`}
+        className={`columns${!calendarShown || hidden.has('fun') ? ' columns-single' : ''}`}
       >
-        {calendarInColumn && (
+        {calendarShown && (
         <div>
-          <SectionHead title="Calendar" meta={meta} id="calendar" />
-          <div className="cal-list">
-            {events.length > 0 ? (
-              events.map((e, i) => (
-                <div key={i} className="cal-row">
-                  <span className="cal-date">{formatDate(e.date)}</span>
-                  <span>
-                    <span className="cal-title">{e.title}</span>
-                    {(e.time || e.detail) && (
-                      <>
-                        {' '}
-                        <span className="cal-detail">
-                          — {[e.time && formatTime(e.time), e.detail].filter(Boolean).join(' · ')}
-                        </span>
-                      </>
-                    )}
-                  </span>
-                </div>
-              ))
-            ) : (
-              leaderMode && (
-                <p className="empty-hint no-print">Add this month’s dates in the editor.</p>
-              )
-            )}
+          <div className="section-head">
+            <h2>Calendar</h2>
+            {/* Readers switch the view for themselves. The button never
+                prints; the view they chose does. */}
+            <button
+              type="button"
+              className="view-swap no-print"
+              onClick={onToggleCalendarView}
+              title={calendarView === 'calendar' ? 'Show as a list' : 'Show as a calendar'}
+            >
+              {calendarView === 'calendar' ? 'List' : 'Calendar'}
+            </button>
+            <Credit meta={meta} id="calendar" />
           </div>
+
+          {calendarView === 'calendar' ? (
+            <>
+              <MonthCalendar monthKey={monthKey} events={events} birthdays={birthdays} />
+              {events.length > 0 && (
+                <div className="cal-names">
+                  {events.map((e, i) => (
+                    <div key={i} className="cal-row">
+                      <span className="cal-date">{formatDate(e.date)}</span>
+                      <span>
+                        <span className="cal-title">{e.title}</span>
+                        {(e.time || e.detail) && (
+                          <>
+                            {' '}
+                            <span className="cal-detail">
+                              — {[e.time && formatTime(e.time), e.detail].filter(Boolean).join(' · ')}
+                            </span>
+                          </>
+                        )}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="cal-list">
+              {events.length > 0 ? (
+                events.map((e, i) => (
+                  <div key={i} className="cal-row">
+                    <span className="cal-date">{formatDate(e.date)}</span>
+                    <span>
+                      <span className="cal-title">{e.title}</span>
+                      {(e.time || e.detail) && (
+                        <>
+                          {' '}
+                          <span className="cal-detail">
+                            — {[e.time && formatTime(e.time), e.detail].filter(Boolean).join(' · ')}
+                          </span>
+                        </>
+                      )}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                leaderMode && (
+                  <p className="empty-hint no-print">Add this month’s dates in the editor.</p>
+                )
+              )}
+            </div>
+          )}
 
           <div className="birthdays">
             <div className="eyebrow">Happy Birthday</div>

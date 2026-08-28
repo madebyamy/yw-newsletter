@@ -701,3 +701,22 @@ body {
   font-size: 13px;
   color: var(--muted);
 }
+
+/* Reader's own list/calendar switch, sitting in the section head. Screen only:
+   the printed sheet keeps whatever the editor chose. */
+.view-swap {
+  margin-left: auto;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-pill);
+  background: var(--canvas);
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  cursor: pointer;
+  line-height: 1.4;
+}
+.view-swap:hover { color: var(--ink); border-color: var(--muted-soft); }

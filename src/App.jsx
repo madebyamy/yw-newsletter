@@ -77,6 +77,9 @@ export default function App() {
 
   const [copied, setCopied] = useState(null)
   const [preview, setPreview] = useState(null)
+  // A reader switching the calendar view for themselves. Not saved anywhere —
+  // it lasts for their visit and leaves the stored setting untouched.
+  const [calendarOverride, setCalendarOverride] = useState(null)
   const [leaderMode, setLeaderMode] = useState(initialLeaderMode)
   const [months, setMonths] = useState(null)
 
@@ -196,7 +199,7 @@ export default function App() {
     setOverflow((prev) =>
       prev.length === next.length && prev.every((v, i) => v === next[i]) ? prev : next,
     )
-  }, [issue, loading, scale, isPhone])
+  }, [issue, loading, scale, isPhone, calendarOverride])
 
   // ---------------------------------------------------------------- actions
 
@@ -260,6 +263,12 @@ export default function App() {
     if (forLeaders) url.searchParams.set('edit', '1')
     else url.searchParams.delete('edit')
     return url.toString()
+  }
+
+  function toggleCalendarView() {
+    const saved = issue.calendar?.view === 'calendar' ? 'calendar' : 'list'
+    const current = calendarOverride || saved
+    setCalendarOverride(current === 'calendar' ? 'list' : 'calendar')
   }
 
   async function copyLink(forLeaders) {
@@ -409,7 +418,14 @@ export default function App() {
             <div key={i} className="sheet">
               <div className="page-frame" style={frameStyle}>
                 <div className="page-scale" style={pageStyle}>
-                  <Page issue={issue} meta={meta} monthKey={monthKey} leaderMode={leaderMode} />
+                  <Page
+                    issue={issue}
+                    meta={meta}
+                    monthKey={monthKey}
+                    leaderMode={leaderMode}
+                    viewOverride={calendarOverride}
+                    onToggleCalendarView={toggleCalendarView}
+                  />
                 </div>
               </div>
               {overflow[i] > 0 && (

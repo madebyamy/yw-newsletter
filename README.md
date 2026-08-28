@@ -114,21 +114,20 @@ Activities and birthdays are typed into the **Calendar & Birthdays** section
 with real pickers — a date and time for each activity, a date for each
 birthday. The year on a birthday is ignored; only the day matters.
 
-**Show as** switches the month between two looks:
+**Show as** sets how the month starts out:
 
-- **List of dates** — a compact list in a column, alongside "For You".
-- **Month calendar** — a full-width month grid in the spirit of a bullet
-  journal: a soft dot grid, dotted rules, activities in green and birthdays in
-  pink on the day they fall.
+- **List of dates** — a compact list of what is on.
+- **Month calendar** — a month grid in the spirit of a bullet journal: a soft
+  dot grid, dotted rules, activities in green and birthdays in pink on the day
+  they fall, with the names listed underneath.
 
-The grid needs the width of the whole page, so in calendar view it becomes its
-own band. That is more than page 2 can hold alongside everything else — hiding
-one block with its eye makes room, and the Activity Spotlight is the natural
-one, since the calendar already lists the activities.
+The grid sits in the same column as the list, so switching between them does
+not change what else fits on the page.
 
-On a phone the cells are too narrow for names, so they shrink to dots and a
-list underneath carries the names and times. In print the names sit inside the
-cells as normal.
+Anyone reading can switch for themselves with the small **List / Calendar**
+button beside the Calendar heading. That choice is theirs alone: it is not
+saved, does not affect other readers, and the button never prints. What they
+are looking at is what they would print.
 
 ## Turning blocks off for a month
 
