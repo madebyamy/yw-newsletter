@@ -17,6 +17,7 @@ export default function Editor({
   onSaveSection,
   onPreview,
   onLeaveLeaderMode,
+  onLogOut,
 }) {
   const [activeId, setActiveId] = useState(null)
   const [draft, setDraft] = useState(null)
@@ -67,6 +68,30 @@ export default function Editor({
 
   function setField(key, value) {
     setDraft((d) => ({ ...d, [key]: value }))
+  }
+
+  // Which blocks are switched off for this month.
+  const hiddenIds = useMemo(() => {
+    const list = issue?.visibility?.hidden
+    return new Set(Array.isArray(list) ? list : [])
+  }, [issue])
+
+  const [togglingId, setTogglingId] = useState(null)
+
+  // The eye saves straight away — a toggle that needed a separate Save step
+  // would be more confusing than useful.
+  async function toggleHidden(id) {
+    setTogglingId(id)
+    setMessage(null)
+    const next = new Set(hiddenIds)
+    if (next.has(id)) next.delete(id)
+    else next.add(id)
+
+    const result = await onSaveSection('visibility', { hidden: [...next] })
+    setTogglingId(null)
+    if (!result.ok) {
+      setMessage({ kind: 'error', text: result.error || 'Could not change that.' })
+    }
   }
 
   async function handleSave() {
@@ -123,28 +148,50 @@ export default function Editor({
 
           {unlocked && !section && (
             <div className="section-list">
-              {SECTIONS.map((s) => {
+              {SECTIONS.filter((s) => !s.internalSection).map((s) => {
                 const entry = meta?.[s.id]
+                const canHide = HIDEABLE.some((h) => h.id === s.id)
+                const isHidden = hiddenIds.has(s.id)
                 return (
-                  <button key={s.id} className="section-btn" onClick={() => openSection(s.id)}>
-                    <span className="page-chip">P{s.page}</span>
-                    <span>
-                      <span className="section-name">{s.label}</span>
-                      <span className="section-meta">
-                        {entry?.by
-                          ? `Last edited by ${entry.by}${
-                              entry.at
-                                ? ' · ' +
-                                  new Date(entry.at).toLocaleDateString(undefined, {
-                                    month: 'short',
-                                    day: 'numeric',
-                                  })
-                                : ''
-                            }`
-                          : s.hint}
+                  <div key={s.id} className={`section-row${isHidden ? ' is-hidden' : ''}`}>
+                    <button className="section-btn" onClick={() => openSection(s.id)}>
+                      <span className="page-chip">P{s.page}</span>
+                      <span>
+                        <span className="section-name">{s.label}</span>
+                        <span className="section-meta">
+                          {isHidden
+                            ? `Hidden in ${monthLabel} — still saved`
+                            : entry?.by
+                              ? `Last edited by ${entry.by}${
+                                  entry.at
+                                    ? ' · ' +
+                                      new Date(entry.at).toLocaleDateString(undefined, {
+                                        month: 'short',
+                                        day: 'numeric',
+                                      })
+                                    : ''
+                                }`
+                              : s.hint}
+                        </span>
                       </span>
-                    </span>
-                  </button>
+                    </button>
+
+                    {canHide && (
+                      <button
+                        className="eye-btn"
+                        onClick={() => toggleHidden(s.id)}
+                        disabled={togglingId === s.id}
+                        aria-pressed={!isHidden}
+                        title={
+                          isHidden
+                            ? `Show ${s.label} in ${monthLabel}`
+                            : `Hide ${s.label} in ${monthLabel}`
+                        }
+                      >
+                        <EyeIcon open={!isHidden} />
+                      </button>
+                    )}
+                  </div>
                 )
               })}
             </div>
@@ -203,6 +250,19 @@ export default function Editor({
               <>
                 <span className="saved-note">
                   Editing as <strong>{editorName || 'Someone'}</strong>
+                  {onLogOut && (
+                    <>
+                      {' · '}
+                      <button
+                        type="button"
+                        className="link-btn"
+                        onClick={onLogOut}
+                        title="Forgets the passcode on this device"
+                      >
+                        Log out
+                      </button>
+                    </>
+                  )}
                   {onLeaveLeaderMode && (
                     <>
                       {' · '}
@@ -229,6 +289,25 @@ export default function Editor({
     </>
   )
 }
+
+// ---------------------------------------------------------------- icons
+
+const EyeIcon = ({ open }) => (
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    {open ? (
+      <>
+        <path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z" />
+        <circle cx="12" cy="12" r="2.6" />
+      </>
+    ) : (
+      <>
+        <path d="M4 4l16 16" />
+        <path d="M9.6 5.8A10.9 10.9 0 0 1 12 5.5c6.4 0 10 6.5 10 6.5a17.6 17.6 0 0 1-3.5 4.2" />
+        <path d="M6.4 7.6A17.4 17.4 0 0 0 2 12s3.6 6.5 10 6.5a11 11 0 0 0 3.1-.45" />
+      </>
+    )}
+  </svg>
+)
 
 // ---------------------------------------------------------------- publish
 

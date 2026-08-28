@@ -26,6 +26,8 @@ export const SECTIONS = [
     id: 'visibility',
     label: 'Show or Hide Blocks',
     page: 0,
+    // Edited through the eye icons on the section list, not as its own screen.
+    internalSection: true,
     hint: 'Turn blocks off for this month only — other months keep theirs.',
     fields: [{ key: 'hidden', label: 'Hidden blocks', type: 'internal' }],
   },

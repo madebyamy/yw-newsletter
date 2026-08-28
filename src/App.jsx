@@ -33,6 +33,21 @@ function initialLeaderMode() {
   }
 }
 const NAME_KEY = 'yw-newsletter:editor-name'
+// Keeps a leader signed in between visits. This is the shared editing
+// passcode, not a personal password, and Log out clears it — but it does mean
+// a shared computer stays unlocked until someone logs out.
+const AUTH_KEY = 'yw-newsletter:auth'
+
+function readStoredAuth() {
+  try {
+    const raw = localStorage.getItem(AUTH_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw)
+    return parsed && typeof parsed.passcode === 'string' ? parsed : null
+  } catch {
+    return null
+  }
+}
 
 function initialMonth() {
   const fromUrl = new URLSearchParams(window.location.search).get('month')
@@ -53,9 +68,12 @@ export default function App() {
   const [loading, setLoading] = useState(true)
 
   const [editorOpen, setEditorOpen] = useState(false)
-  const [unlocked, setUnlocked] = useState(false)
-  const [editorName, setEditorName] = useState(() => localStorage.getItem(NAME_KEY) || '')
-  const passcodeRef = useRef('')
+  const storedAuth = useMemo(() => readStoredAuth(), [])
+  const [unlocked, setUnlocked] = useState(() => Boolean(storedAuth))
+  const [editorName, setEditorName] = useState(
+    () => readStoredAuth()?.name || localStorage.getItem(NAME_KEY) || '',
+  )
+  const passcodeRef = useRef(readStoredAuth()?.passcode || '')
 
   const [copied, setCopied] = useState(null)
   const [preview, setPreview] = useState(null)
@@ -194,7 +212,12 @@ export default function App() {
     if (!result.ok) return result
     passcodeRef.current = passcode
     setEditorName(name)
-    localStorage.setItem(NAME_KEY, name)
+    try {
+      localStorage.setItem(NAME_KEY, name)
+      localStorage.setItem(AUTH_KEY, JSON.stringify({ name, passcode }))
+    } catch {
+      // Private browsing — they will just sign in again next visit.
+    }
     setUnlocked(true)
     if (result.mode) setMode(result.mode)
     return { ok: true }
@@ -220,6 +243,17 @@ export default function App() {
     },
     [monthKey, editorName, refreshMonths],
   )
+
+  const handleLogOut = useCallback(() => {
+    try {
+      localStorage.removeItem(AUTH_KEY)
+    } catch {
+      // Nothing stored to clear.
+    }
+    passcodeRef.current = ''
+    setUnlocked(false)
+    setEditorOpen(false)
+  }, [])
 
   const handlePreview = useCallback((sectionId, value) => {
     setPreview(sectionId ? { id: sectionId, value } : null)
@@ -425,6 +459,7 @@ export default function App() {
         onSaveSection={handleSaveSection}
         onPreview={handlePreview}
         onLeaveLeaderMode={leaveLeaderMode}
+        onLogOut={handleLogOut}
       />
     </div>
   )

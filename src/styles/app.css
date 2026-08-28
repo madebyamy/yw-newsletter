@@ -618,3 +618,30 @@ body {
   border-radius: var(--r-md);
   margin-bottom: 16px;
 }
+
+/* --- section rows with an eye toggle ------------------------------------ */
+
+.section-row {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+.section-row .section-btn { flex: 1; }
+.section-row.is-hidden .section-btn { opacity: 0.55; }
+.section-row.is-hidden .section-name { text-decoration: line-through; }
+
+.eye-btn {
+  flex-shrink: 0;
+  width: 48px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-lg);
+  background: var(--canvas);
+  color: var(--ink);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.eye-btn:hover { background: var(--surface-card); }
+.eye-btn[aria-pressed='false'] { color: var(--muted-soft); background: var(--surface-soft); }
+.eye-btn:disabled { opacity: 0.5; cursor: wait; }

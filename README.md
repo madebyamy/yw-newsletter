@@ -137,13 +137,17 @@ carries on with no activities.
 
 ## Turning blocks off for a month
 
-**Show or Hide Blocks** ticks any of the eight blocks off for the month you are
-editing. Hiding the Activity Spotlight in September leaves October's alone —
-the list is stored with that month's issue.
+Each block in **Edit sections** has an eye beside it. Click it to leave that
+block out of the month you are editing; click again to bring it back. It saves
+straight away, and the row greys out so you can see at a glance what is off.
 
-Nothing is deleted. Whatever was written stays saved and reappears the moment
-you tick the block back on. If both bottom-of-page-2 blocks are hidden the
-remaining one widens to fill the space.
+Hiding the Activity Spotlight in September leaves October's alone — the list is
+stored with that month's issue. Nothing is deleted: whatever was written stays
+saved and reappears the moment you switch the eye back on.
+
+The masthead, background and publish rows have no eye, since they are either
+always needed or never printed.
+
 
 ## Reading it on a phone
 
