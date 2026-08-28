@@ -409,7 +409,7 @@ export default function App() {
             <div key={i} className="sheet">
               <div className="page-frame" style={frameStyle}>
                 <div className="page-scale" style={pageStyle}>
-                  <Page issue={issue} meta={meta} monthKey={monthKey} />
+                  <Page issue={issue} meta={meta} monthKey={monthKey} leaderMode={leaderMode} />
                 </div>
               </div>
               {overflow[i] > 0 && (

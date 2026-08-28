@@ -273,7 +273,7 @@ export function PageOne({ issue, meta }) {
 
 // ---------------------------------------------------------------- page two
 
-export function PageTwo({ issue, meta, monthKey }) {
+export function PageTwo({ issue, meta, monthKey, leaderMode = false }) {
   const m = issue.masthead
   const h = issue.highlight
   const a = issue.activity
@@ -446,7 +446,9 @@ export function PageTwo({ issue, meta, monthKey }) {
                 </div>
               ))
             ) : (
-              <p className="empty-hint">Add this month’s dates in the editor.</p>
+              leaderMode && (
+                <p className="empty-hint no-print">Add this month’s dates in the editor.</p>
+              )
             )}
           </div>
 
@@ -461,7 +463,9 @@ export function PageTwo({ issue, meta, monthKey }) {
                 ))}
               </div>
             ) : (
-              <p className="empty-hint">Add birthdays in the editor.</p>
+              leaderMode && (
+                <p className="empty-hint no-print">Add birthdays in the editor.</p>
+              )
             )}
           </div>
         </div>
