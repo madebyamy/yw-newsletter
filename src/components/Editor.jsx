@@ -153,9 +153,16 @@ export default function Editor({
                 const canHide = HIDEABLE.some((h) => h.id === s.id)
                 const isHidden = hiddenIds.has(s.id)
                 return (
-                  <div key={s.id} className={`section-row${isHidden ? ' is-hidden' : ''}`}>
+                  <div
+                    key={s.id}
+                    className={`section-row${isHidden ? ' is-hidden' : ''}${
+                      s.page === 0 ? ' is-setup' : ''
+                    }`}
+                  >
                     <button className="section-btn" onClick={() => openSection(s.id)}>
-                      <span className="page-chip">P{s.page}</span>
+                      {/* Page 0 is not a page — these two set up the issue
+                          rather than printing on it, so they read "Setup". */}
+                      <span className="page-chip">{s.page === 0 ? 'Setup' : `P${s.page}`}</span>
                       <span>
                         <span className="section-name">{s.label}</span>
                         <span className="section-meta">

@@ -645,3 +645,15 @@ body {
 .eye-btn:hover { background: var(--surface-card); }
 .eye-btn[aria-pressed='false'] { color: var(--muted-soft); background: var(--surface-soft); }
 .eye-btn:disabled { opacity: 0.5; cursor: wait; }
+
+/* The two setup rows are not part of the printed newsletter, so they carry a
+   hot-pink outline and chip to set them apart from the content blocks. */
+.section-row.is-setup .section-btn {
+  border-color: var(--pink);
+  background: #fff5f8;
+}
+.section-row.is-setup .section-btn:hover { background: #ffeef4; }
+.section-row.is-setup .page-chip {
+  background: var(--pink);
+  color: #fff;
+}
