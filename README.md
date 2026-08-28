@@ -135,6 +135,24 @@ The function fetches server-side and caches for five minutes, so the sheet is
 not hit on every page load. Without the variable set, the newsletter simply
 carries on with no activities.
 
+## Scripture links
+
+Scripture references link themselves to churchofjesuschrist.org, so a girl
+reading on her phone can tap one and be in the verse. Write them normally —
+`D&C 13:1`, `Doctrine and Covenants 107:18–19`, `Joseph Smith—History 1:66–73`
+— and the link is worked out from the wording. Nothing is looked up: the
+Church's scripture URLs are predictable, so the reference is simply translated.
+
+It handles verse lists and ranges (`25:3, 7` and `110:11–16` both land on the
+right verse), and multiple references in one line, where later ones inherit the
+book: `D&C 13:1; 107:18–20` links both.
+
+Anything that is not recognisably scripture is left as plain text — *For the
+Strength of Youth, 46–49* stays unlinked rather than being guessed at.
+
+On paper the links look like ordinary text. In a PDF they stay clickable, so
+sharing the file digitally works too.
+
 ## Turning blocks off for a month
 
 Each block in **Edit sections** has an eye beside it. Click it to leave that

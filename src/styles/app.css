@@ -657,3 +657,13 @@ body {
   background: var(--pink);
   color: #fff;
 }
+
+.photo-preview {
+  display: block;
+  width: 150px;
+  height: 175px;
+  object-fit: cover;
+  border-radius: var(--r-md);
+  border: 1px solid var(--hairline);
+  margin-bottom: 12px;
+}

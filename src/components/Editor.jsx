@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { HIDEABLE, SECTIONS, SECTION_MAP, emptyValue } from '../data/schema'
 import { churchOnly, loadRoster, parseExport, rowsForMonth, saveRoster } from '../lib/birthdays'
-import { numberOr, prepareBackground } from '../lib/palette'
+import { numberOr, prepareBackground, prepareImage } from '../lib/palette'
 
 export default function Editor({
   open,
@@ -215,6 +215,19 @@ export default function Editor({
               {section.id === 'design' && (
                 <BackgroundDesigner draft={draft} onChange={setField} />
               )}
+              {section.id === 'highlight' && (
+                <PhotoUpload
+                  value={draft.photoUrl}
+                  onChange={(v) => setField('photoUrl', v)}
+                />
+              )}
+              {section.id === 'scriptures' && (
+                <p className="import-hint schedule-note">
+                  References link themselves to churchofjesuschrist.org, so the girls can tap a
+                  scripture and read it. Write them normally — “D&amp;C 13:1” or “Doctrine and
+                  Covenants 107:18–19”.
+                </p>
+              )}
               {section.id === 'calendar' && (
                 <p className="import-hint schedule-note">
                   Ward activities come straight from the schedule sheet and update themselves —
@@ -294,6 +307,68 @@ export default function Editor({
         )}
       </aside>
     </>
+  )
+}
+
+// ---------------------------------------------------------------- photo
+
+// Her photo is chosen from the device rather than pasted as a link. It is
+// shrunk to print size before being stored with the issue — a phone photo is
+// several megabytes, and the printed frame is under two inches wide.
+function PhotoUpload({ value, onChange }) {
+  const [busy, setBusy] = useState(false)
+  const [note, setNote] = useState(null)
+
+  async function handleFile(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setBusy(true)
+    setNote(null)
+    try {
+      const result = await prepareImage(file, { maxEdge: 900, quality: 0.82 })
+      onChange(result.dataUrl)
+      setNote({ kind: 'ok', text: `Photo added (${result.approxKb} KB). Press Save section to keep it.` })
+    } catch (err) {
+      setNote({ kind: 'error', text: err.message })
+    } finally {
+      setBusy(false)
+      e.target.value = ''
+    }
+  }
+
+  const isLink = typeof value === 'string' && /^https?:/i.test(value)
+
+  return (
+    <div className="import-panel">
+      <span className="field-label">Her photo</span>
+
+      {note && <div className={`notice ${note.kind}`}>{note.text}</div>}
+
+      {value ? (
+        <>
+          <img className="photo-preview" src={value} alt="" />
+          {isLink && (
+            <p className="import-hint">
+              This one is a web link from before. Choosing a photo below stores it with the
+              newsletter instead, so it cannot vanish if that link stops working.
+            </p>
+          )}
+          <button type="button" className="btn" onClick={() => onChange('')}>
+            Remove photo
+          </button>
+        </>
+      ) : (
+        <p className="import-hint">
+          Optional. Without one, her initial is shown instead. Please have her and her parents’
+          permission before adding a photo to a public link.
+        </p>
+      )}
+
+      <label className={`btn btn-file${busy ? ' is-busy' : ''}`}>
+        {busy ? 'Preparing…' : value ? 'Choose a different photo' : 'Choose a photo'}
+        <input type="file" accept="image/*" onChange={handleFile} hidden disabled={busy} />
+      </label>
+    </div>
   )
 }
 

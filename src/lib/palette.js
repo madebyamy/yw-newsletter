@@ -215,11 +215,12 @@ export function paletteToStyle(palette, opacity) {
 const MAX_EDGE = 1400
 const QUALITY = 0.78
 
-// Shrinks and re-encodes an uploaded image, then reads its palette. Keeping
-// this small matters: the result is stored inline with the issue.
-export function prepareBackground(file) {
+// Shrinks and re-encodes an uploaded image. Everything stored with an issue
+// goes through here: a phone photo is several megabytes, and both the printed
+// background and the portrait frame are far smaller than the original.
+export function prepareImage(file, { maxEdge = MAX_EDGE, quality = QUALITY } = {}) {
   return new Promise((resolve, reject) => {
-    if (!file.type.startsWith('image/')) {
+    if (!file || !file.type || !file.type.startsWith('image/')) {
       reject(new Error('That is not an image file.'))
       return
     }
@@ -231,36 +232,19 @@ export function prepareBackground(file) {
       img.onerror = () => reject(new Error('That image could not be opened.'))
       img.onload = () => {
         try {
-          const scale = Math.min(1, MAX_EDGE / Math.max(img.width, img.height))
+          const scale = Math.min(1, maxEdge / Math.max(img.width, img.height))
           const w = Math.max(1, Math.round(img.width * scale))
           const h = Math.max(1, Math.round(img.height * scale))
 
           const canvas = document.createElement('canvas')
           canvas.width = w
           canvas.height = h
-          const ctx = canvas.getContext('2d')
-          ctx.drawImage(img, 0, 0, w, h)
-          const dataUrl = canvas.toDataURL('image/jpeg', QUALITY)
-
-          // Sample from a small copy — faster and it smooths out speckle.
-          const sw = 90
-          const sh = Math.max(1, Math.round((h / w) * sw))
-          const small = document.createElement('canvas')
-          small.width = sw
-          small.height = sh
-          const sctx = small.getContext('2d')
-          sctx.drawImage(img, 0, 0, sw, sh)
-          const { picked, lightest } = dominantColors(sctx.getImageData(0, 0, sw, sh))
-          const palette = derivePalette(picked, lightest)
-
-          if (!palette) {
-            reject(new Error('That image has no colour to work with — try a different one.'))
-            return
-          }
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h)
+          const dataUrl = canvas.toDataURL('image/jpeg', quality)
 
           resolve({
             dataUrl,
-            palette,
+            image: img,
             width: w,
             height: h,
             approxKb: Math.round((dataUrl.length * 0.75) / 1024),
@@ -273,4 +257,26 @@ export function prepareBackground(file) {
     }
     reader.readAsDataURL(file)
   })
+}
+
+// A background image also supplies the page's colours.
+export async function prepareBackground(file) {
+  const prepared = await prepareImage(file)
+
+  // Sample from a small copy — faster, and it smooths out speckle.
+  const sw = 90
+  const sh = Math.max(1, Math.round((prepared.height / prepared.width) * sw))
+  const small = document.createElement('canvas')
+  small.width = sw
+  small.height = sh
+  const sctx = small.getContext('2d')
+  sctx.drawImage(prepared.image, 0, 0, sw, sh)
+
+  const { picked, lightest } = dominantColors(sctx.getImageData(0, 0, sw, sh))
+  const palette = derivePalette(picked, lightest)
+  if (!palette) {
+    throw new Error('That image has no colour to work with — try a different one.')
+  }
+
+  return { ...prepared, palette }
 }

@@ -120,7 +120,7 @@ export const SECTIONS = [
     fields: [
       { key: 'name', label: 'Her name', type: 'text' },
       { key: 'role', label: 'Class / age', type: 'text' },
-      { key: 'photoUrl', label: 'Photo URL (optional)', type: 'text' },
+      { key: 'photoUrl', label: 'Photo', type: 'internal' },
       { key: 'headline', label: 'Headline', type: 'text' },
       { key: 'quote', label: 'Pull quote', type: 'textarea', rows: 3 },
       { key: 'body', label: 'Write-up', type: 'textarea', rows: 6 },

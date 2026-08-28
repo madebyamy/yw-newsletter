@@ -1,6 +1,7 @@
 import React from 'react'
 import { numberOr, paletteToStyle } from '../lib/palette'
 import { hiddenSet } from '../data/schema'
+import { linkifyReference } from '../lib/scriptures'
 
 // ---------------------------------------------------------------- helpers
 
@@ -68,6 +69,26 @@ const SectionHead = ({ title, meta, id }) => (
 
 const nonEmpty = (list) => (Array.isArray(list) ? list.filter(Boolean) : [])
 
+// A scripture reference, linked to churchofjesuschrist.org where the wording
+// is recognisable. On paper it just reads as text; on a phone it is tappable.
+const Ref = ({ children }) => {
+  const parts = linkifyReference(children)
+  if (parts.length === 0) return children || null
+  return (
+    <>
+      {parts.map((p, i) =>
+        p.url ? (
+          <a key={i} className="scripture-link" href={p.url} target="_blank" rel="noreferrer">
+            {p.text}
+          </a>
+        ) : (
+          <React.Fragment key={i}>{p.text}</React.Fragment>
+        ),
+      )}
+    </>
+  )
+}
+
 // ---------------------------------------------------------------- page one
 
 export function PageOne({ issue, meta }) {
@@ -127,7 +148,7 @@ export function PageOne({ issue, meta }) {
           <div className="scripture-feature">
             <div className="ornament">✦</div>
             <blockquote>“{s.featureText}”</blockquote>
-            <cite>{s.featureRef}</cite>
+            <cite><Ref>{s.featureRef}</Ref></cite>
           </div>
         )}
 
@@ -135,7 +156,7 @@ export function PageOne({ issue, meta }) {
           <div className="scripture-list">
             {supporting.map((row, i) => (
               <div key={i} className="scripture-row">
-                <span className="ref">{row.ref}</span>
+                <span className="ref"><Ref>{row.ref}</Ref></span>
                 <span className="note">{row.note}</span>
               </div>
             ))}
@@ -145,7 +166,7 @@ export function PageOne({ issue, meta }) {
             <aside className="memorize">
               <div className="eyebrow">Memorize This Month</div>
               <blockquote>“{s.memorizeText}”</blockquote>
-              <cite>{s.memorizeRef}</cite>
+              <cite><Ref>{s.memorizeRef}</Ref></cite>
             </aside>
           )}
         </div>
@@ -166,7 +187,7 @@ export function PageOne({ issue, meta }) {
               <div className="lesson-summary">{w.summary}</div>
               {(w.scriptures || w.taughtBy) && (
                 <div className="lesson-foot">
-                  <span className="refs">{w.scriptures}</span>
+                  <span className="refs"><Ref>{w.scriptures}</Ref></span>
                   {w.taughtBy && <span className="who">{w.taughtBy}</span>}
                 </div>
               )}

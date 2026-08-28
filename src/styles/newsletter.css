@@ -981,3 +981,18 @@
   }
   .page-frame { border-radius: 14px; }
 }
+
+/* Scripture references link to churchofjesuschrist.org. On screen they are
+   tappable; on paper they must look like ordinary text, so the underline and
+   colour are dropped for print. */
+.scripture-link {
+  color: inherit;
+  text-decoration-color: currentColor;
+  text-underline-offset: 0.14em;
+}
+@media screen {
+  .scripture-link { text-decoration: underline; text-decoration-thickness: 0.5px; }
+}
+@media print {
+  .scripture-link { text-decoration: none; }
+}
