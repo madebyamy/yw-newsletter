@@ -124,6 +124,13 @@ birthday. The year on a birthday is ignored; only the day matters.
 The grid sits in the same column as the list, so switching between them does
 not change what else fits on the page.
 
+A cell that narrow can only hold coloured dots, so hovering a day shows a small
+panel listing what is on it. Days also carry a plain tooltip, which is what a
+touch screen and a screen reader use.
+
+**In print the grid is dropped and the dated list is printed instead.** Dots on
+paper say nothing, since nobody can hover a sheet.
+
 Anyone reading can switch for themselves with the small **List / Calendar**
 button beside the Calendar heading. That choice is theirs alone: it is not
 saved, does not affect other readers, and the button never prints. What they

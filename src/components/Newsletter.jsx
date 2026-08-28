@@ -2,11 +2,20 @@ import React from 'react'
 import { numberOr, paletteToStyle } from '../lib/palette'
 import { hiddenSet } from '../data/schema'
 import { linkifyReference } from '../lib/scriptures'
-import { WEEKDAY_INITIALS, entriesByDay, formatDate, formatTime, monthGrid } from '../lib/calendar'
+import {
+  WEEKDAY_INITIALS,
+  entriesByDay,
+  formatDate,
+  formatTime,
+  monthGrid,
+  monthIndexOf,
+} from '../lib/calendar'
 
 // ---------------------------------------------------------------- helpers
 
 export const DEFAULT_BG_OPACITY = 0.12
+
+const MONTH_ABBR_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 // The sheet's colour scheme. With no background image this returns nothing,
 // so the Clay defaults in the stylesheet stand untouched.
@@ -91,7 +100,13 @@ function MonthCalendar({ monthKey, events, birthdays }) {
           {week.map((day, di) => {
             const entries = day ? byDay.get(day) || [] : []
             return (
-              <div key={di} className={`cal-day${day ? '' : ' is-empty'}`}>
+              <div
+                key={di}
+                className={`cal-day${day ? '' : ' is-empty'}${entries.length ? ' has-entries' : ''}`}
+                // Also a native tooltip, so the day is readable where hover is
+                // not available — touch screens, and screen readers.
+                title={entries.length ? entries.map((e) => e.label).join(' · ') : undefined}
+              >
                 {day && <span className="cal-num">{day}</span>}
                 {entries.map((e, i) => (
                   <span key={i} className={`cal-entry is-${e.kind}`}>
@@ -99,6 +114,20 @@ function MonthCalendar({ monthKey, events, birthdays }) {
                     <span className="cal-label">{e.label}</span>
                   </span>
                 ))}
+
+                {/* Hovering a day says what is on it, since a cell this narrow
+                    holds only dots. Screen only. */}
+                {entries.length > 0 && (
+                  <span className="cal-pop no-print" aria-hidden="true">
+                    <span className="cal-pop-day">{MONTH_ABBR_SHORT[monthIndexOf(monthKey)]} {day}</span>
+                    {entries.map((e, i) => (
+                      <span key={i} className={`cal-pop-row is-${e.kind}`}>
+                        <span className="cal-dot" />
+                        {e.label}
+                      </span>
+                    ))}
+                  </span>
+                )}
               </div>
             )
           })}

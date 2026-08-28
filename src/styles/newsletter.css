@@ -1103,3 +1103,75 @@
 /* Names for the dots above. */
 .cal-names { margin-top: 0.07in; }
 
+
+/* --- hover popup ---------------------------------------------------------
+   A cell this narrow can only show dots, so hovering a day says what is on
+   it. Screen only — see the print rules below, where the grid is replaced by
+   the list entirely. */
+
+.cal-day { position: relative; }
+.cal-day.has-entries { cursor: default; }
+
+.cal-pop {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  min-width: 1.5in;
+  max-width: 2.4in;
+  padding: 0.07in 0.08in;
+  border-radius: 0.08in;
+  background: #ffffff;
+  border: 1px solid var(--hairline);
+  box-shadow: 0 4px 14px rgba(10, 10, 10, 0.14);
+  text-align: left;
+  white-space: normal;
+}
+.cal-day.has-entries:hover .cal-pop { display: block; }
+
+/* Days at the edges would otherwise push the popup outside the sheet. */
+.cal-week > .cal-day:nth-child(1) .cal-pop,
+.cal-week > .cal-day:nth-child(2) .cal-pop { left: 0; transform: none; }
+.cal-week > .cal-day:nth-child(6) .cal-pop,
+.cal-week > .cal-day:nth-child(7) .cal-pop { left: auto; right: 0; transform: none; }
+
+/* The first row has nothing above it to grow into. */
+.cal-week:first-of-type .cal-pop { bottom: auto; top: calc(100% + 4px); }
+
+.cal-pop-day {
+  display: block;
+  font-size: calc(5.4pt * var(--ts));
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.035in;
+}
+
+.cal-pop-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.045in;
+  font-size: calc(6.4pt * var(--ts));
+  line-height: 1.3;
+  color: var(--ink);
+  margin-bottom: 0.025in;
+}
+.cal-pop-row:last-child { margin-bottom: 0; }
+.cal-pop-row .cal-dot { margin-top: 0.03in; flex-shrink: 0; }
+.cal-pop-row.is-activity .cal-dot { background: var(--cal-activity); }
+.cal-pop-row.is-birthday .cal-dot { background: var(--cal-birthday); }
+
+/* --- print: the list, not the grid ---------------------------------------
+   Dots on paper say nothing — nobody can hover a sheet — so the grid drops
+   out and the dated list stands on its own. */
+@media print {
+  .cal-grid { display: none !important; }
+  .cal-names {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    border-top: 0 !important;
+  }
+}
