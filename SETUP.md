@@ -17,9 +17,21 @@ public link).
 3. In the left sidebar open **SQL Editor** → **New query**.
 4. Open `supabase/schema.sql` from this repo, paste the whole thing in, and
    press **Run**. It creates two tables: `newsletters` and `newsletter_edits`.
-5. In the left sidebar open **Project Settings → API**. Copy these two values:
-   - **Project URL** — looks like `https://abcdefgh.supabase.co`
-   - **service_role** secret key — the long one under "Project API keys"
+5. Collect these two values:
+
+   **Project URL** — it is not printed on the API Keys page. Either read it off
+   your browser's address bar (`/dashboard/project/<REF>/...`) and use
+   `https://<REF>.supabase.co`, or open **Data API** in the left sidebar where
+   it is shown in full.
+
+   **Secret key** — **Project Settings → API Keys → Secret keys**, the row named
+   `default` starting `sb_secret_`. Press the eye icon to reveal it.
+
+   > Supabase replaced the old `anon` / `service_role` JWTs with publishable and
+   > secret keys. The new secret key is the drop-in replacement for
+   > `service_role` and works with this app unchanged — ignore the "Legacy anon,
+   > service_role API keys" tab. The environment variable is still named
+   > `SUPABASE_SERVICE_ROLE_KEY`; paste the `sb_secret_` value into it.
 
 > The service_role key is a master key. It only ever lives in Netlify's
 > environment variables and is used by the server-side function. It never
@@ -39,7 +51,7 @@ public link).
    | Key | Value |
    |---|---|
    | `SUPABASE_URL` | the Project URL from step 1 |
-   | `SUPABASE_SERVICE_ROLE_KEY` | the service_role key from step 1 |
+   | `SUPABASE_SERVICE_ROLE_KEY` | the `sb_secret_…` key from step 1 |
    | `EDIT_PASSCODE` | whatever passcode you want to give your editors |
 
 4. Go to **Deploys → Trigger deploy → Deploy site**. Environment variables are
