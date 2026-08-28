@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { SECTIONS, SECTION_MAP, emptyValue } from '../data/schema'
+import { HIDEABLE, SECTIONS, SECTION_MAP, emptyValue } from '../data/schema'
 import { churchOnly, loadRoster, parseExport, rowsForMonth, saveRoster } from '../lib/birthdays'
 import { numberOr, prepareBackground } from '../lib/palette'
 
@@ -151,6 +151,9 @@ export default function Editor({
 
           {unlocked && section && draft && (
             <div>
+              {section.id === 'visibility' && (
+                <VisibilityToggles draft={draft} onChange={setField} monthLabel={monthLabel} />
+              )}
               {section.id === 'design' && (
                 <BackgroundDesigner draft={draft} onChange={setField} />
               )}
@@ -201,6 +204,56 @@ export default function Editor({
         )}
       </aside>
     </>
+  )
+}
+
+// ---------------------------------------------------------------- visibility
+
+// Switches blocks off for this month. The list is stored with the issue, so
+// hiding something in September leaves every other month untouched.
+function VisibilityToggles({ draft, onChange, monthLabel }) {
+  const hidden = new Set(Array.isArray(draft.hidden) ? draft.hidden : [])
+
+  function toggle(id) {
+    const next = new Set(hidden)
+    if (next.has(id)) next.delete(id)
+    else next.add(id)
+    onChange('hidden', [...next])
+  }
+
+  return (
+    <div className="import-panel">
+      <span className="field-label">Blocks in {monthLabel}</span>
+      <p className="import-hint">
+        Unticked blocks are left out of {monthLabel} only. Anything you have written stays saved and
+        comes back when you tick it again.
+      </p>
+
+      <ul className="toggle-list">
+        {HIDEABLE.map((block) => (
+          <li key={block.id}>
+            <label className="toggle-row">
+              <input
+                type="checkbox"
+                checked={!hidden.has(block.id)}
+                onChange={() => toggle(block.id)}
+              />
+              <span className="toggle-name">{block.label}</span>
+              <span className="toggle-page">Page {block.page}</span>
+            </label>
+          </li>
+        ))}
+      </ul>
+
+      {hidden.size > 0 && (
+        <p className="import-hint">
+          {hidden.size} {hidden.size === 1 ? 'block is' : 'blocks are'} hidden this month.{' '}
+          <button type="button" className="link-btn" onClick={() => onChange('hidden', [])}>
+            Show all again
+          </button>
+        </p>
+      )}
+    </div>
   )
 }
 

@@ -1,5 +1,6 @@
 import React from 'react'
 import { numberOr, paletteToStyle } from '../lib/palette'
+import { hiddenSet } from '../data/schema'
 
 // ---------------------------------------------------------------- helpers
 
@@ -78,6 +79,7 @@ export function PageOne({ issue, meta }) {
   const questions = nonEmpty(t?.questions)
   const supporting = nonEmpty(s?.supporting)
   const sheet = sheetProps(issue)
+  const hidden = hiddenSet(issue)
 
   return (
     <div className={sheet.className} style={sheet.style}>
@@ -97,7 +99,7 @@ export function PageOne({ issue, meta }) {
         <div className="masthead-rule" />
       </header>
 
-      {(t?.title || t?.intro) && (
+      {!hidden.has('theme') && (t?.title || t?.intro) && (
         <section className="theme">
           <div className="eyebrow">This Month’s Theme</div>
           <h1>{t.title}</h1>
@@ -117,6 +119,7 @@ export function PageOne({ issue, meta }) {
         </section>
       )}
 
+      {!hidden.has('scriptures') && (
       <section className="scriptures">
         <SectionHead title="Monthly Scriptures" meta={meta} id="scriptures" />
 
@@ -147,7 +150,9 @@ export function PageOne({ issue, meta }) {
           )}
         </div>
       </section>
+      )}
 
+      {!hidden.has('lessons') && (
       <section className="lessons">
         <SectionHead title="Sundays This Month" meta={meta} id="lessons" />
         <div className="lesson-grid">
@@ -169,7 +174,9 @@ export function PageOne({ issue, meta }) {
           ))}
         </div>
       </section>
+      )}
 
+      {!hidden.has('leader') && (
       <section className="leader">
         <div className="leader-note">
           <SectionHead title="A Note For You" meta={meta} id="leader" />
@@ -185,6 +192,7 @@ export function PageOne({ issue, meta }) {
           </aside>
         )}
       </section>
+      )}
 
       <footer className="page-foot">
         <span>{m?.unit} · {m?.audience}</span>
@@ -209,6 +217,7 @@ export function PageTwo({ issue, meta }) {
   const birthdays = nonEmpty(cal?.birthdays).filter((b) => b.date || b.name)
   const monogram = (h?.name || '').trim().charAt(0).toUpperCase()
   const sheet = sheetProps(issue)
+  const hidden = hiddenSet(issue)
 
   return (
     <div className={sheet.className} style={sheet.style}>
@@ -220,6 +229,7 @@ export function PageTwo({ issue, meta }) {
         <span>{m?.monthLabel}</span>
       </header>
 
+      {!hidden.has('highlight') && (
       <section className="highlight">
         <SectionHead title="Member Highlight" meta={meta} id="highlight" />
         <div className="highlight-body">
@@ -257,7 +267,9 @@ export function PageTwo({ issue, meta }) {
           </div>
         </div>
       </section>
+      )}
 
+      {!hidden.has('activity') && (
       <section className="activity">
         <SectionHead title="Activity Spotlight" meta={meta} id="activity" />
         <div className="activity-panel">
@@ -287,8 +299,13 @@ export function PageTwo({ issue, meta }) {
           {a?.note && <div className="activity-note">{a.note}</div>}
         </div>
       </section>
+      )}
 
-      <section className="columns">
+      {!(hidden.has('calendar') && hidden.has('fun')) && (
+      <section
+        className={`columns${hidden.has('calendar') || hidden.has('fun') ? ' columns-single' : ''}`}
+      >
+        {!hidden.has('calendar') && (
         <div>
           <SectionHead title="Calendar" meta={meta} id="calendar" />
           <div className="cal-list">
@@ -327,7 +344,9 @@ export function PageTwo({ issue, meta }) {
             )}
           </div>
         </div>
+        )}
 
+        {!hidden.has('fun') && (
         <div>
           <SectionHead title="For You" meta={meta} id="fun" />
 
@@ -367,7 +386,9 @@ export function PageTwo({ issue, meta }) {
             </div>
           )}
         </div>
+        )}
       </section>
+      )}
 
       <footer className="page-foot">
         <span>{m?.unit} · {m?.audience}</span>

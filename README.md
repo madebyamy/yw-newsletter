@@ -70,6 +70,23 @@ Press **Print / Save PDF**, then in the browser's print dialog:
 
 Two-sided, flip on long edge, gives you the finished handout.
 
+## Turning blocks off for a month
+
+**Show or Hide Blocks** ticks any of the eight blocks off for the month you are
+editing. Hiding the Activity Spotlight in September leaves October's alone —
+the list is stored with that month's issue.
+
+Nothing is deleted. Whatever was written stays saved and reappears the moment
+you tick the block back on. If both bottom-of-page-2 blocks are hidden the
+remaining one widens to fill the space.
+
+## Reading it on a phone
+
+Below 820px the sheet stops pretending to be paper: it reflows to one column
+at readable size instead of shrinking an 8.5in page onto a 6cm screen. Above
+that width, and when printing, nothing changes — the fixed two-page layout is
+exactly as it was.
+
 ## Backgrounds and colours
 
 Each month can have its own background pattern. In **Background & Colors**,

@@ -16,6 +16,13 @@ export const SECTIONS = [
     ],
   },
   {
+    id: 'visibility',
+    label: 'Show or Hide Blocks',
+    page: 0,
+    hint: 'Turn blocks off for this month only — other months keep theirs.',
+    fields: [{ key: 'hidden', label: 'Hidden blocks', type: 'internal' }],
+  },
+  {
     id: 'masthead',
     label: 'Header & Masthead',
     page: 1,
@@ -182,6 +189,24 @@ export const SECTIONS = [
 
 export const SECTION_MAP = Object.fromEntries(SECTIONS.map((s) => [s.id, s]))
 export const SECTION_IDS = SECTIONS.map((s) => s.id)
+
+// Blocks that can be switched off for a month. The masthead stays (it is the
+// header), and the two settings sections are not printed at all.
+export const HIDEABLE = [
+  { id: 'theme', label: 'Monthly Theme', page: 1 },
+  { id: 'scriptures', label: 'Monthly Scriptures', page: 1 },
+  { id: 'lessons', label: 'Sundays This Month', page: 1 },
+  { id: 'leader', label: 'A Note For You & Service Focus', page: 1 },
+  { id: 'highlight', label: 'Member Highlight', page: 2 },
+  { id: 'activity', label: 'Activity Spotlight', page: 2 },
+  { id: 'calendar', label: 'Calendar & Birthdays', page: 2 },
+  { id: 'fun', label: 'For You', page: 2 },
+]
+
+export function hiddenSet(issue) {
+  const list = issue?.visibility?.hidden
+  return new Set(Array.isArray(list) ? list : [])
+}
 
 // An empty value shaped correctly for a given field type.
 export function emptyValue(field) {

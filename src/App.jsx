@@ -8,6 +8,10 @@ import './styles/newsletter.css'
 
 const PAGE_W = 8.5 * 96
 const PAGE_H = 11 * 96
+// Below this width the fixed 8.5in sheet would shrink past readability, so
+// the page reflows instead of scaling. Laptop and print are unaffected.
+const PHONE_MAX = 820
+const PHONE_QUERY = `(max-width: ${PHONE_MAX}px)`
 const NAME_KEY = 'yw-newsletter:editor-name'
 
 function initialMonth() {
@@ -35,6 +39,17 @@ export default function App() {
 
   const [copied, setCopied] = useState(false)
   const [preview, setPreview] = useState(null)
+
+  const [isPhone, setIsPhone] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia(PHONE_QUERY).matches,
+  )
+
+  useEffect(() => {
+    const mq = window.matchMedia(PHONE_QUERY)
+    const onChange = (e) => setIsPhone(e.matches)
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
 
   // ---------------------------------------------------------------- load
 
@@ -78,6 +93,17 @@ export default function App() {
     const el = previewRef.current
     if (!el) return
     const measure = () => {
+      // Re-checked on every resize, not just on the media-query change event:
+      // dragging a desktop window narrow has to reflow too, and some browsers
+      // do not fire that event for programmatic viewport changes.
+      const phone = window.matchMedia(PHONE_QUERY).matches
+      setIsPhone(phone)
+
+      // A phone page reflows to full width, so no scaling is applied.
+      if (phone) {
+        setScale(1)
+        return
+      }
       const available = el.clientWidth - 24
       setScale(Math.min(1, Math.max(0.25, available / PAGE_W)))
     }
@@ -94,13 +120,13 @@ export default function App() {
   useLayoutEffect(() => {
     const el = previewRef.current
     if (!el) return
-    const next = [...el.querySelectorAll('.page')].map((p) =>
-      Math.max(0, p.scrollHeight - p.clientHeight),
-    )
+    const next = isPhone
+      ? []
+      : [...el.querySelectorAll('.page')].map((p) => Math.max(0, p.scrollHeight - p.clientHeight))
     setOverflow((prev) =>
       prev.length === next.length && prev.every((v, i) => v === next[i]) ? prev : next,
     )
-  }, [issue, loading, scale])
+  }, [issue, loading, scale, isPhone])
 
   // ---------------------------------------------------------------- actions
 
@@ -152,6 +178,10 @@ export default function App() {
 
   // ---------------------------------------------------------------- render
 
+  // Always set, even on a phone: the stylesheet's media query overrides both
+  // with !important below 820px. Leaving them off when this state is briefly
+  // stale collapses the frame to nothing, so CSS owns the phone layout and
+  // these only ever describe the desktop sheet.
   const frameStyle = { width: PAGE_W * scale, height: PAGE_H * scale }
   const pageStyle = { transform: `scale(${scale})` }
 
