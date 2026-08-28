@@ -157,15 +157,17 @@ export const SECTIONS = [
     page: 2,
     hint: 'Everything happening this month, plus birthdays to celebrate.',
     fields: [
+      { key: 'view', label: 'Show as', type: 'internal' },
       {
         key: 'events',
-        label: 'This month',
+        label: 'Activities this month',
         type: 'objectList',
-        itemLabel: 'Event',
+        itemLabel: 'Activity',
         fields: [
-          { key: 'date', label: 'Date', type: 'text' },
-          { key: 'title', label: 'Event', type: 'text' },
-          { key: 'detail', label: 'Time / place', type: 'text' },
+          { key: 'date', label: 'Date', type: 'date' },
+          { key: 'time', label: 'Time', type: 'time' },
+          { key: 'title', label: 'Activity', type: 'text' },
+          { key: 'detail', label: 'Where', type: 'text' },
         ],
       },
       {
@@ -174,7 +176,7 @@ export const SECTIONS = [
         type: 'objectList',
         itemLabel: 'Birthday',
         fields: [
-          { key: 'date', label: 'Date', type: 'text' },
+          { key: 'date', label: 'Date', type: 'date', hint: 'The year is ignored' },
           { key: 'name', label: 'Name', type: 'text' },
         ],
       },

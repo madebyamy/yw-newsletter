@@ -996,3 +996,146 @@
 @media print {
   .scripture-link { text-decoration: none; }
 }
+
+/* --- month calendar ------------------------------------------------------
+   Bullet-journal feel: a soft dot grid, dotted rules, rounded cells, and
+   colour carried by small markers rather than heavy fills. Activities take
+   the green, birthdays the pink; both follow the background palette when one
+   is set. */
+
+.paper {
+  --cal-activity: var(--mint);
+  --cal-birthday: var(--pink);
+}
+.paper.has-palette {
+  --cal-activity: var(--pill-3);
+  --cal-birthday: var(--pill-1);
+}
+
+.calendar-month { margin-top: 0.12in; flex-shrink: 0; }
+
+.cal-grid {
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-lg);
+  padding: 0.06in 0.07in 0.055in;
+  background:
+    radial-gradient(circle, rgba(10, 10, 10, 0.07) 0.6px, transparent 0.7px) 0 0 / 0.115in 0.115in,
+    var(--canvas);
+}
+
+.cal-head {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.03in;
+  margin-bottom: 0.045in;
+}
+.cal-head span {
+  text-align: center;
+  font-size: calc(5.6pt * var(--ts));
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cal-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.022in;
+}
+
+.cal-day {
+  min-height: 0.28in;
+  border-radius: var(--r-sm);
+  border: 1px dotted var(--hairline);
+  background: rgba(255, 255, 255, 0.55);
+  padding: 0.018in 0.022in;
+  display: flex;
+  flex-direction: column;
+  gap: 0.014in;
+  overflow: hidden;
+}
+.cal-day.is-empty { border-color: transparent; background: transparent; }
+
+.cal-num {
+  font-size: calc(5.8pt * var(--ts));
+  font-weight: 600;
+  color: var(--muted);
+  line-height: 1;
+}
+
+.cal-entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.022in;
+  font-size: calc(4.6pt * var(--ts));
+  line-height: 1.1;
+  color: var(--ink);
+  border-radius: 0.03in;
+  padding: 0.012in 0.022in;
+}
+.cal-entry.is-activity { background: color-mix(in srgb, var(--cal-activity) 42%, #fff); }
+.cal-entry.is-birthday { background: color-mix(in srgb, var(--cal-birthday) 32%, #fff); }
+
+.cal-dot {
+  flex-shrink: 0;
+  width: 0.032in;
+  height: 0.032in;
+  border-radius: 999px;
+  margin-top: 0.012in;
+}
+.cal-entry.is-activity .cal-dot,
+.cal-key.is-activity .cal-dot { background: var(--cal-activity); }
+.cal-entry.is-birthday .cal-dot,
+.cal-key.is-birthday .cal-dot { background: var(--cal-birthday); }
+
+.cal-label {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.cal-legend {
+  display: flex;
+  gap: 0.16in;
+  margin-top: 0.045in;
+  padding-top: 0.04in;
+  border-top: 1px dotted var(--hairline);
+}
+.cal-key {
+  display: flex;
+  align-items: center;
+  gap: 0.04in;
+  font-size: calc(5.6pt * var(--ts));
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.cal-key .cal-dot { width: 0.05in; height: 0.05in; margin-top: 0; }
+
+/* On a phone the cells are too narrow for names, so they become dots and the
+   list below carries the detail. */
+@media screen and (max-width: 820px) {
+  .cal-day { min-height: 44px; }
+  .cal-label { display: none; }
+  .cal-entry {
+    padding: 0;
+    background: none !important;
+  }
+  .cal-dot { width: 7px; height: 7px; margin-top: 2px; }
+  .cal-grid { padding: 10px; }
+}
+
+/* The phone-only companion list: names for the dots in the grid above. */
+.cal-phone-list { display: none; }
+
+@media screen and (max-width: 820px) {
+  .cal-phone-list {
+    display: block;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dotted var(--hairline);
+  }
+}

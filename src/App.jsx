@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useSta
 import { PageOne, PageTwo } from './components/Newsletter'
 import Editor from './components/Editor'
 import { SEEDS, currentMonthKey, monthLabel, normalizeIssue, shiftMonth } from './data/issues'
-import { listMonths, loadActivities, loadIssue, saveSection, verifyPasscode, MODE } from './lib/store'
+import { listMonths, loadIssue, saveSection, verifyPasscode, MODE } from './lib/store'
 import './styles/app.css'
 import './styles/newsletter.css'
 
@@ -79,7 +79,6 @@ export default function App() {
   const [preview, setPreview] = useState(null)
   const [leaderMode, setLeaderMode] = useState(initialLeaderMode)
   const [months, setMonths] = useState(null)
-  const [activities, setActivities] = useState({})
 
   // The months a reader is allowed to reach. Leaders navigate freely so they
   // can build next month before anyone else sees it.
@@ -101,12 +100,6 @@ export default function App() {
   useEffect(() => {
     refreshMonths()
   }, [refreshMonths])
-
-  // Read once per visit; the function caches it for five minutes so an edit
-  // to the sheet shows up without anyone touching the newsletter.
-  useEffect(() => {
-    loadActivities().then((r) => setActivities(r.months || {}))
-  }, [])
 
   // A reader who lands on an unfinished month is moved to the newest finished
   // one rather than being shown a blank page.
@@ -203,7 +196,7 @@ export default function App() {
     setOverflow((prev) =>
       prev.length === next.length && prev.every((v, i) => v === next[i]) ? prev : next,
     )
-  }, [issue, loading, scale, isPhone, activities])
+  }, [issue, loading, scale, isPhone])
 
   // ---------------------------------------------------------------- actions
 
@@ -416,7 +409,7 @@ export default function App() {
             <div key={i} className="sheet">
               <div className="page-frame" style={frameStyle}>
                 <div className="page-scale" style={pageStyle}>
-                  <Page issue={issue} meta={meta} scheduled={activities[monthKey] || []} />
+                  <Page issue={issue} meta={meta} monthKey={monthKey} />
                 </div>
               </div>
               {overflow[i] > 0 && (

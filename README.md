@@ -108,50 +108,27 @@ a blank page.
 > Because a month is unpublished until you say otherwise, **September needs
 > publishing once** — otherwise the girls will see "No issues yet".
 
-## Ward activities from the schedule sheet
+## The calendar
 
-The activity schedule lives in a published Google Sheet, and the newsletter
-reads it live — change a date there and the newsletter follows, with no
-copying. Each month's activities appear in the Calendar block.
+Activities and birthdays are typed into the **Calendar & Birthdays** section
+with real pickers — a date and time for each activity, a date for each
+birthday. The year on a birthday is ignored; only the day matters.
 
-Only the **first two columns** are read: the date and the activity name.
-Anything further right stays private to the leaders, so working notes never
-reach a page the girls read.
+**Show as** switches the month between two looks:
 
-Dates are understood as `Sep 12`, `September 12` or `Mar 27-28`, and a header
-row needs no special handling — "date" is not a date, so it is skipped like any
-other unparseable line. Because a tab labelled 2026 runs on into the next
-January, the parser rolls the year forward when the months stop advancing, so
-the two Januaries land in 2026 and 2027 correctly.
+- **List of dates** — a compact list in a column, alongside "For You".
+- **Month calendar** — a full-width month grid in the spirit of a bullet
+  journal: a soft dot grid, dotted rules, activities in green and birthdays in
+  pink on the day they fall.
 
-Set up in Netlify:
+The grid needs the width of the whole page, so in calendar view it becomes its
+own band. That is more than page 2 can hold alongside everything else — hiding
+one block with its eye makes room, and the Activity Spotlight is the natural
+one, since the calendar already lists the activities.
 
-| Key | Value |
-|---|---|
-| `ACTIVITY_SHEET_CSV_URL` | the published sheet URL |
-| `ACTIVITY_SHEET_YEAR` | the year the tab starts in (defaults to 2026) |
-
-The function fetches server-side and caches for five minutes, so the sheet is
-not hit on every page load. Without the variable set, the newsletter simply
-carries on with no activities.
-
-## Scripture links
-
-Scripture references link themselves to churchofjesuschrist.org, so a girl
-reading on her phone can tap one and be in the verse. Write them normally —
-`D&C 13:1`, `Doctrine and Covenants 107:18–19`, `Joseph Smith—History 1:66–73`
-— and the link is worked out from the wording. Nothing is looked up: the
-Church's scripture URLs are predictable, so the reference is simply translated.
-
-It handles verse lists and ranges (`25:3, 7` and `110:11–16` both land on the
-right verse), and multiple references in one line, where later ones inherit the
-book: `D&C 13:1; 107:18–20` links both.
-
-Anything that is not recognisably scripture is left as plain text — *For the
-Strength of Youth, 46–49* stays unlinked rather than being guessed at.
-
-On paper the links look like ordinary text. In a PDF they stay clickable, so
-sharing the file digitally works too.
+On a phone the cells are too narrow for names, so they shrink to dots and a
+list underneath carries the names and times. In print the names sit inside the
+cells as normal.
 
 ## Turning blocks off for a month
 

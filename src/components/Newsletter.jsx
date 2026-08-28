@@ -2,6 +2,7 @@ import React from 'react'
 import { numberOr, paletteToStyle } from '../lib/palette'
 import { hiddenSet } from '../data/schema'
 import { linkifyReference } from '../lib/scriptures'
+import { WEEKDAY_INITIALS, entriesByDay, formatDate, formatTime, monthGrid } from '../lib/calendar'
 
 // ---------------------------------------------------------------- helpers
 
@@ -68,6 +69,53 @@ const SectionHead = ({ title, meta, id }) => (
 )
 
 const nonEmpty = (list) => (Array.isArray(list) ? list.filter(Boolean) : [])
+
+// A month grid in the spirit of a bullet journal: dotted rules, soft washes,
+// activities in green and birthdays in pink on the day they fall. Names show
+// where there is room; on a phone the cells shrink to dots and the list
+// underneath carries the detail.
+function MonthCalendar({ monthKey, events, birthdays }) {
+  const weeks = monthGrid(monthKey)
+  const byDay = entriesByDay({ events, birthdays, monthKey })
+
+  return (
+    <div className="cal-grid">
+      <div className="cal-head">
+        {WEEKDAY_INITIALS.map((d, i) => (
+          <span key={i}>{d}</span>
+        ))}
+      </div>
+
+      {weeks.map((week, wi) => (
+        <div key={wi} className="cal-week">
+          {week.map((day, di) => {
+            const entries = day ? byDay.get(day) || [] : []
+            return (
+              <div key={di} className={`cal-day${day ? '' : ' is-empty'}`}>
+                {day && <span className="cal-num">{day}</span>}
+                {entries.map((e, i) => (
+                  <span key={i} className={`cal-entry is-${e.kind}`}>
+                    <span className="cal-dot" />
+                    <span className="cal-label">{e.label}</span>
+                  </span>
+                ))}
+              </div>
+            )
+          })}
+        </div>
+      ))}
+
+      <div className="cal-legend">
+        <span className="cal-key is-activity">
+          <span className="cal-dot" /> Activities
+        </span>
+        <span className="cal-key is-birthday">
+          <span className="cal-dot" /> Birthdays
+        </span>
+      </div>
+    </div>
+  )
+}
 
 // A scripture reference, linked to churchofjesuschrist.org where the wording
 // is recognisable. On paper it just reads as text; on a phone it is tappable.
@@ -225,7 +273,7 @@ export function PageOne({ issue, meta }) {
 
 // ---------------------------------------------------------------- page two
 
-export function PageTwo({ issue, meta, scheduled = [] }) {
+export function PageTwo({ issue, meta, monthKey }) {
   const m = issue.masthead
   const h = issue.highlight
   const a = issue.activity
@@ -234,14 +282,15 @@ export function PageTwo({ issue, meta, scheduled = [] }) {
 
   const facts = nonEmpty(h?.facts).filter((f) => f.label || f.value)
   const bring = nonEmpty(a?.bring)
-  // The sheet is the schedule; anything typed into the Calendar section is
-  // shown after it rather than replaced by it.
-  const manualEvents = nonEmpty(cal?.events).filter((e) => e.date || e.title)
-  const events = [...scheduled, ...manualEvents]
+  const events = nonEmpty(cal?.events).filter((e) => e.date || e.title)
   const birthdays = nonEmpty(cal?.birthdays).filter((b) => b.date || b.name)
   const monogram = (h?.name || '').trim().charAt(0).toUpperCase()
   const sheet = sheetProps(issue)
   const hidden = hiddenSet(issue)
+
+  // The grid needs the full page width; the list is happy in a column.
+  const calendarAsGrid = !hidden.has('calendar') && cal?.view === 'calendar'
+  const calendarInColumn = !hidden.has('calendar') && !calendarAsGrid
 
   return (
     <div className={sheet.className} style={sheet.style}>
@@ -325,24 +374,72 @@ export function PageTwo({ issue, meta, scheduled = [] }) {
       </section>
       )}
 
-      {!(hidden.has('calendar') && hidden.has('fun')) && (
+      {/* The month grid needs the full width to be readable, so in calendar
+          view it becomes its own band and only "For You" stays in a column. */}
+      {calendarAsGrid && (
+        <section className="calendar-month">
+          <SectionHead title="Calendar" meta={meta} id="calendar" />
+          <MonthCalendar monthKey={monthKey} events={events} birthdays={birthdays} />
+
+          {/* On a phone the cells are too narrow for names, so the grid shows
+              dots and this list carries them. Hidden on desktop and in print,
+              where the names already fit inside the cells. */}
+          {events.length > 0 && (
+            <div className="cal-phone-list">
+              {events.map((e, i) => (
+                <div key={i} className="cal-row">
+                  <span className="cal-date">{formatDate(e.date)}</span>
+                  <span>
+                    <span className="cal-title">{e.title}</span>
+                    {(e.time || e.detail) && (
+                      <>
+                        {' '}
+                        <span className="cal-detail">
+                          — {[e.time && formatTime(e.time), e.detail].filter(Boolean).join(' · ')}
+                        </span>
+                      </>
+                    )}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {birthdays.length > 0 && (
+            <div className="birthdays">
+              <div className="eyebrow">Happy Birthday</div>
+              <div className="birthday-list">
+                {birthdays.map((b, i) => (
+                  <span key={i}>
+                    <strong>{formatDate(b.date)}</strong> {b.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+      )}
+
+      {!(calendarInColumn === false && hidden.has('fun')) && (
       <section
-        className={`columns${hidden.has('calendar') || hidden.has('fun') ? ' columns-single' : ''}`}
+        className={`columns${!calendarInColumn || hidden.has('fun') ? ' columns-single' : ''}`}
       >
-        {!hidden.has('calendar') && (
+        {calendarInColumn && (
         <div>
           <SectionHead title="Calendar" meta={meta} id="calendar" />
           <div className="cal-list">
             {events.length > 0 ? (
               events.map((e, i) => (
                 <div key={i} className="cal-row">
-                  <span className="cal-date">{e.date}</span>
+                  <span className="cal-date">{formatDate(e.date)}</span>
                   <span>
                     <span className="cal-title">{e.title}</span>
-                    {e.detail && (
+                    {(e.time || e.detail) && (
                       <>
                         {' '}
-                        <span className="cal-detail">— {e.detail}</span>
+                        <span className="cal-detail">
+                          — {[e.time && formatTime(e.time), e.detail].filter(Boolean).join(' · ')}
+                        </span>
                       </>
                     )}
                   </span>
@@ -359,7 +456,7 @@ export function PageTwo({ issue, meta, scheduled = [] }) {
               <div className="birthday-list">
                 {birthdays.map((b, i) => (
                   <span key={i}>
-                    <strong>{b.date}</strong> {b.name}
+                    <strong>{formatDate(b.date)}</strong> {b.name}
                   </span>
                 ))}
               </div>

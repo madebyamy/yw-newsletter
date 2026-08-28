@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { HIDEABLE, SECTIONS, SECTION_MAP, emptyValue } from '../data/schema'
-import { churchOnly, loadRoster, parseExport, rowsForMonth, saveRoster } from '../lib/birthdays'
 import { numberOr, prepareBackground, prepareImage } from '../lib/palette'
 
 export default function Editor({
@@ -209,9 +208,6 @@ export default function Editor({
               {section.id === 'publish' && (
                 <PublishToggle draft={draft} onChange={setField} monthLabel={monthLabel} />
               )}
-              {section.id === 'visibility' && (
-                <VisibilityToggles draft={draft} onChange={setField} monthLabel={monthLabel} />
-              )}
               {section.id === 'design' && (
                 <BackgroundDesigner draft={draft} onChange={setField} />
               )}
@@ -229,17 +225,7 @@ export default function Editor({
                 </p>
               )}
               {section.id === 'calendar' && (
-                <p className="import-hint schedule-note">
-                  Ward activities come straight from the schedule sheet and update themselves —
-                  there is no need to type them here. Anything you add below appears after them.
-                </p>
-              )}
-              {section.id === 'calendar' && (
-                <BirthdayImport
-                  monthKey={monthKey}
-                  monthLabel={monthLabel}
-                  onFill={(rows) => setField('birthdays', rows)}
-                />
+                <CalendarViewToggle draft={draft} onChange={setField} />
               )}
               {section.fields.map((field) => (
                 <Field
@@ -307,6 +293,37 @@ export default function Editor({
         )}
       </aside>
     </>
+  )
+}
+
+// ---------------------------------------------------------------- calendar
+
+// Whether this month prints as a list of dates or as a month grid.
+function CalendarViewToggle({ draft, onChange }) {
+  const view = draft.view === 'calendar' ? 'calendar' : 'list'
+  return (
+    <div className="import-panel">
+      <span className="field-label">Show as</span>
+      <div className="view-toggle">
+        {[
+          ['list', 'List of dates'],
+          ['calendar', 'Month calendar'],
+        ].map(([value, label]) => (
+          <button
+            key={value}
+            type="button"
+            className={`view-option${view === value ? ' is-on' : ''}`}
+            onClick={() => onChange('view', value)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      <p className="import-hint">
+        The calendar shows activities in green and birthdays in pink on the day they fall. On a
+        phone the days shrink to dots and the list appears underneath.
+      </p>
+    </div>
   )
 }
 
@@ -432,55 +449,6 @@ function PublishToggle({ draft, onChange, monthLabel }) {
   )
 }
 
-// ---------------------------------------------------------------- visibility
-
-// Switches blocks off for this month. The list is stored with the issue, so
-// hiding something in September leaves every other month untouched.
-function VisibilityToggles({ draft, onChange, monthLabel }) {
-  const hidden = new Set(Array.isArray(draft.hidden) ? draft.hidden : [])
-
-  function toggle(id) {
-    const next = new Set(hidden)
-    if (next.has(id)) next.delete(id)
-    else next.add(id)
-    onChange('hidden', [...next])
-  }
-
-  return (
-    <div className="import-panel">
-      <span className="field-label">Blocks in {monthLabel}</span>
-      <p className="import-hint">
-        Unticked blocks are left out of {monthLabel} only. Anything you have written stays saved and
-        comes back when you tick it again.
-      </p>
-
-      <ul className="toggle-list">
-        {HIDEABLE.map((block) => (
-          <li key={block.id}>
-            <label className="toggle-row">
-              <input
-                type="checkbox"
-                checked={!hidden.has(block.id)}
-                onChange={() => toggle(block.id)}
-              />
-              <span className="toggle-name">{block.label}</span>
-              <span className="toggle-page">Page {block.page}</span>
-            </label>
-          </li>
-        ))}
-      </ul>
-
-      {hidden.size > 0 && (
-        <p className="import-hint">
-          {hidden.size} {hidden.size === 1 ? 'block is' : 'blocks are'} hidden this month.{' '}
-          <button type="button" className="link-btn" onClick={() => onChange('hidden', [])}>
-            Show all again
-          </button>
-        </p>
-      )}
-    </div>
-  )
-}
 
 // ---------------------------------------------------------------- background
 
@@ -577,89 +545,6 @@ function BackgroundDesigner({ draft, onChange }) {
   )
 }
 
-// ---------------------------------------------------------------- birthdays
-
-// Pulls Church-tagged birthdays out of a birthday-tracker export and fills in
-// the ones falling in this issue's month. The roster is remembered, so later
-// months only need one click.
-function BirthdayImport({ monthKey, monthLabel, onFill }) {
-  const [roster, setRoster] = useState(() => loadRoster())
-  const [note, setNote] = useState(null)
-
-  const availableThisMonth = useMemo(
-    () => (roster ? rowsForMonth(roster.roster, monthKey).length : 0),
-    [roster, monthKey],
-  )
-
-  function applyRoster(list, { announceImport } = {}) {
-    const rows = rowsForMonth(list, monthKey)
-    onFill(rows)
-    setNote({
-      kind: rows.length ? 'ok' : 'info',
-      text: rows.length
-        ? `Filled ${rows.length} ${rows.length === 1 ? 'birthday' : 'birthdays'} for ${monthLabel}. Press Save section to keep it.`
-        : `No Church birthdays fall in ${monthLabel}.` +
-          (announceImport ? ` ${list.length} were imported for other months.` : ''),
-    })
-  }
-
-  async function handleFile(e) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setNote(null)
-    try {
-      const list = churchOnly(parseExport(await file.text()))
-      if (list.length === 0) {
-        setNote({ kind: 'error', text: 'That export has no birthdays tagged Church.' })
-        return
-      }
-      saveRoster(list)
-      setRoster({ roster: list, savedAt: new Date().toISOString() })
-      applyRoster(list, { announceImport: true })
-    } catch (err) {
-      setNote({ kind: 'error', text: err.message })
-    } finally {
-      e.target.value = ''
-    }
-  }
-
-  return (
-    <div className="import-panel">
-      <span className="field-label">From your birthday tracker</span>
-
-      {note && <div className={`notice ${note.kind}`}>{note.text}</div>}
-
-      {roster ? (
-        <>
-          <p className="import-hint">
-            {roster.roster.length} Church {roster.roster.length === 1 ? 'birthday' : 'birthdays'} saved
-            {availableThisMonth > 0
-              ? ` · ${availableThisMonth} in ${monthLabel}`
-              : ` · none in ${monthLabel}`}
-          </p>
-          <button
-            type="button"
-            className="btn"
-            onClick={() => applyRoster(roster.roster)}
-            disabled={availableThisMonth === 0}
-          >
-            Fill {monthLabel} birthdays
-          </button>
-        </>
-      ) : (
-        <p className="import-hint">
-          Open the birthday tracker, press <strong>Export</strong>, then choose that file here. Only
-          birthdays tagged <strong>Church</strong> are used.
-        </p>
-      )}
-
-      <label className="btn btn-file">
-        {roster ? 'Re-import updated file' : 'Choose export file'}
-        <input type="file" accept=".json,application/json" onChange={handleFile} hidden />
-      </label>
-    </div>
-  )
-}
 
 // ---------------------------------------------------------------- unlock
 
@@ -729,16 +614,17 @@ function UnlockForm({ onUnlock, mode }) {
 
 // ---------------------------------------------------------------- fields
 
-function Field({ field, value, onChange }) {
+function Field({ field, value, onChange, idPrefix = 'f' }) {
+  const fieldId = `${idPrefix}-${field.key}`
   // Owned by a custom panel above the form.
   if (field.type === 'internal') return null
 
   if (field.type === 'textarea') {
     return (
       <div className="field">
-        <label htmlFor={`f-${field.key}`}>{field.label}</label>
+        <label htmlFor={fieldId}>{field.label}</label>
         <textarea
-          id={`f-${field.key}`}
+          id={fieldId}
           className="textarea"
           rows={field.rows || 3}
           value={value}
@@ -801,6 +687,7 @@ function Field({ field, value, onChange }) {
               <Field
                 key={sub.key}
                 field={sub}
+                idPrefix={`${idPrefix}-${field.key}-${i}`}
                 value={item?.[sub.key] ?? ''}
                 onChange={(v) =>
                   onChange(items.map((row, j) => (j === i ? { ...row, [sub.key]: v } : row)))
@@ -816,11 +703,27 @@ function Field({ field, value, onChange }) {
     )
   }
 
+  if (field.type === 'date' || field.type === 'time') {
+    return (
+      <div className="field">
+        <label htmlFor={fieldId}>{field.label}</label>
+        <input
+          id={fieldId}
+          className="input"
+          type={field.type}
+          value={value || ''}
+          onChange={(e) => onChange(e.target.value)}
+        />
+        {field.hint && <p className="field-hint">{field.hint}</p>}
+      </div>
+    )
+  }
+
   return (
     <div className="field">
-      <label htmlFor={`f-${field.key}`}>{field.label}</label>
+      <label htmlFor={fieldId}>{field.label}</label>
       <input
-        id={`f-${field.key}`}
+        id={fieldId}
         className="input"
         value={value}
         onChange={(e) => onChange(e.target.value)}

@@ -667,3 +667,37 @@ body {
   border: 1px solid var(--hairline);
   margin-bottom: 12px;
 }
+
+/* --- list / calendar toggle --------------------------------------------- */
+
+.view-toggle {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--surface-card);
+  border-radius: var(--r-pill);
+  margin-bottom: 12px;
+}
+.view-option {
+  flex: 1;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+.view-option.is-on {
+  background: var(--canvas);
+  color: var(--ink);
+  box-shadow: 0 1px 2px rgba(10, 10, 10, 0.08);
+}
+
+.field-hint {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
