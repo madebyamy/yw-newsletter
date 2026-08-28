@@ -9,6 +9,7 @@ import {
   formatTime,
   monthGrid,
   monthIndexOf,
+  sortByDate,
 } from '../lib/calendar'
 
 // ---------------------------------------------------------------- helpers
@@ -311,8 +312,15 @@ export function PageTwo({ issue, meta, monthKey, leaderMode = false, viewOverrid
 
   const facts = nonEmpty(h?.facts).filter((f) => f.label || f.value)
   const bring = nonEmpty(a?.bring)
-  const events = nonEmpty(cal?.events).filter((e) => e.date || e.title)
-  const birthdays = nonEmpty(cal?.birthdays).filter((b) => b.date || b.name)
+  // Read in date order regardless of the order they were typed in.
+  const events = sortByDate(
+    nonEmpty(cal?.events).filter((e) => e.date || e.title),
+    monthKey,
+  )
+  const birthdays = sortByDate(
+    nonEmpty(cal?.birthdays).filter((b) => b.date || b.name),
+    monthKey,
+  )
   const monogram = (h?.name || '').trim().charAt(0).toUpperCase()
   const sheet = sheetProps(issue)
   const hidden = hiddenSet(issue)

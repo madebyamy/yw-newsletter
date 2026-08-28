@@ -114,6 +114,9 @@ Activities and birthdays are typed into the **Calendar & Birthdays** section
 with real pickers — a date and time for each activity, a date for each
 birthday. The year on a birthday is ignored; only the day matters.
 
+Both lists read in date order, earliest first, however they were typed in —
+so you can add activities as you hear about them rather than in sequence.
+
 **Show as** sets how the month starts out:
 
 - **List of dates** — a compact list of what is on.

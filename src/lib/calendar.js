@@ -100,6 +100,28 @@ export function monthGrid(monthKey) {
   return weeks
 }
 
+// Orders entries by the day they fall on, earliest first, so the list reads
+// chronologically however they were typed in. Same day sorts by time, with
+// untimed entries after timed ones. Anything without a readable date keeps its
+// original position at the end rather than being dropped.
+export function sortByDate(entries, monthKey) {
+  const monthIndex = monthIndexOf(monthKey)
+  return entries
+    .map((entry, index) => ({ entry, index, day: dayOf(entry.date, monthIndex) }))
+    .sort((a, b) => {
+      const dayA = a.day ?? Infinity
+      const dayB = b.day ?? Infinity
+      if (dayA !== dayB) return dayA - dayB
+
+      const timeA = a.entry.time || '99:99'
+      const timeB = b.entry.time || '99:99'
+      if (timeA !== timeB) return timeA < timeB ? -1 : 1
+
+      return a.index - b.index
+    })
+    .map((item) => item.entry)
+}
+
 // Groups activities and birthdays onto the days they fall on.
 export function entriesByDay({ events = [], birthdays = [], monthKey }) {
   const monthIndex = monthIndexOf(monthKey)
