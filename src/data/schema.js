@@ -4,6 +4,18 @@
 
 export const SECTIONS = [
   {
+    id: 'design',
+    label: 'Background & Colors',
+    page: 0,
+    hint: 'Upload a pattern for this month. The page colours are matched to it automatically.',
+    fields: [
+      // Handled by a custom panel in the editor, not the generic form.
+      { key: 'backgroundImage', label: 'Background image', type: 'internal' },
+      { key: 'backgroundOpacity', label: 'Background strength', type: 'internal' },
+      { key: 'palette', label: 'Palette', type: 'internal' },
+    ],
+  },
+  {
     id: 'masthead',
     label: 'Header & Masthead',
     page: 1,
@@ -175,6 +187,7 @@ export const SECTION_IDS = SECTIONS.map((s) => s.id)
 export function emptyValue(field) {
   if (field.type === 'list') return []
   if (field.type === 'objectList') return []
+  if (field.type === 'internal') return null
   return ''
 }
 

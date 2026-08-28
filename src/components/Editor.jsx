@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { SECTIONS, SECTION_MAP, emptyValue } from '../data/schema'
 import { churchOnly, loadRoster, parseExport, rowsForMonth, saveRoster } from '../lib/birthdays'
+import { numberOr, prepareBackground } from '../lib/palette'
 
 export default function Editor({
   open,
@@ -14,6 +15,7 @@ export default function Editor({
   editorName,
   onUnlock,
   onSaveSection,
+  onPreview,
 }) {
   const [activeId, setActiveId] = useState(null)
   const [draft, setDraft] = useState(null)
@@ -30,6 +32,19 @@ export default function Editor({
   }, [open])
 
   const section = activeId ? SECTION_MAP[activeId] : null
+
+  // Show unsaved edits on the page while they are being made, so visual
+  // controls (background strength, colours) can be judged before saving.
+  useEffect(() => {
+    if (!onPreview) return
+    if (section && draft) onPreview(section.id, draft)
+    else onPreview(null, null)
+  }, [section, draft, onPreview])
+
+  // Drop the preview when the drawer closes, so the page shows saved state.
+  useEffect(() => {
+    if (!open && onPreview) onPreview(null, null)
+  }, [open, onPreview])
 
   const dirty = useMemo(() => {
     if (!section || !draft) return false
@@ -136,6 +151,9 @@ export default function Editor({
 
           {unlocked && section && draft && (
             <div>
+              {section.id === 'design' && (
+                <BackgroundDesigner draft={draft} onChange={setField} />
+              )}
               {section.id === 'calendar' && (
                 <BirthdayImport
                   monthKey={monthKey}
@@ -183,6 +201,101 @@ export default function Editor({
         )}
       </aside>
     </>
+  )
+}
+
+// ---------------------------------------------------------------- background
+
+const DEFAULT_OPACITY = 0.12
+
+// Upload a pattern for the month. The palette is read from the image, so the
+// cards retint themselves; removing the image restores the default scheme.
+function BackgroundDesigner({ draft, onChange }) {
+  const [busy, setBusy] = useState(false)
+  const [note, setNote] = useState(null)
+
+  const image = draft.backgroundImage || null
+  const palette = draft.palette || null
+  const opacity = numberOr(draft.backgroundOpacity, DEFAULT_OPACITY)
+
+  async function handleFile(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setBusy(true)
+    setNote(null)
+    try {
+      const result = await prepareBackground(file)
+      onChange('backgroundImage', result.dataUrl)
+      onChange('palette', result.palette)
+      onChange('backgroundOpacity', numberOr(draft.backgroundOpacity, DEFAULT_OPACITY))
+      setNote({
+        kind: 'ok',
+        text: `Background set (${result.approxKb} KB). Colours matched. Press Save section to keep it.`,
+      })
+    } catch (err) {
+      setNote({ kind: 'error', text: err.message })
+    } finally {
+      setBusy(false)
+      e.target.value = ''
+    }
+  }
+
+  function removeBackground() {
+    onChange('backgroundImage', null)
+    onChange('palette', null)
+    setNote({ kind: 'info', text: 'Background removed. Save section to go back to the default colours.' })
+  }
+
+  return (
+    <div className="import-panel">
+      <span className="field-label">Background pattern</span>
+
+      {note && <div className={`notice ${note.kind}`}>{note.text}</div>}
+
+      {image ? (
+        <>
+          <div className="bg-preview" style={{ backgroundImage: `url(${image})` }} />
+
+          {palette && (
+            <div className="swatches" title="Colours taken from this image">
+              {[palette.featureBg, ...palette.tints, ...palette.pills].map((c, i) => (
+                <span key={i} className="swatch" style={{ background: c }} />
+              ))}
+            </div>
+          )}
+
+          <div className="field">
+            <label htmlFor="bg-strength">Pattern strength — {Math.round(opacity * 100)}%</label>
+            <input
+              id="bg-strength"
+              type="range"
+              min="2"
+              max="35"
+              step="1"
+              value={Math.round(opacity * 100)}
+              onChange={(e) => onChange('backgroundOpacity', Number(e.target.value) / 100)}
+            />
+            <p className="import-hint">
+              Keep it low so the words stay easy to read. Around 10% works well for a busy pattern.
+            </p>
+          </div>
+
+          <button type="button" className="btn" onClick={removeBackground}>
+            Remove background
+          </button>
+        </>
+      ) : (
+        <p className="import-hint">
+          No background — the newsletter uses its default colours. Upload a pattern and the cards
+          retint themselves to match it.
+        </p>
+      )}
+
+      <label className={`btn btn-file${busy ? ' is-busy' : ''}`}>
+        {busy ? 'Reading image…' : image ? 'Replace image' : 'Choose an image'}
+        <input type="file" accept="image/*" onChange={handleFile} hidden disabled={busy} />
+      </label>
+    </div>
   )
 }
 
@@ -339,6 +452,9 @@ function UnlockForm({ onUnlock, mode }) {
 // ---------------------------------------------------------------- fields
 
 function Field({ field, value, onChange }) {
+  // Owned by a custom panel above the form.
+  if (field.type === 'internal') return null
+
   if (field.type === 'textarea') {
     return (
       <div className="field">

@@ -34,6 +34,7 @@ export default function App() {
   const passcodeRef = useRef('')
 
   const [copied, setCopied] = useState(false)
+  const [preview, setPreview] = useState(null)
 
   // ---------------------------------------------------------------- load
 
@@ -58,7 +59,14 @@ export default function App() {
     window.history.replaceState({}, '', url)
   }, [monthKey])
 
-  const issue = useMemo(() => normalizeIssue(raw, monthKey), [raw, monthKey])
+  const savedIssue = useMemo(() => normalizeIssue(raw, monthKey), [raw, monthKey])
+
+  // What the sheets render: the saved issue, with any in-progress section
+  // laid over the top.
+  const issue = useMemo(
+    () => (preview ? { ...savedIssue, [preview.id]: preview.value } : savedIssue),
+    [savedIssue, preview],
+  )
   const meta = raw?._meta || {}
 
   // ---------------------------------------------------------------- scale
@@ -117,6 +125,7 @@ export default function App() {
         passcode: passcodeRef.current,
       })
       if (result.ok) {
+        setPreview(null)
         setRaw(result.raw)
         if (result.mode) setMode(result.mode)
       }
@@ -124,6 +133,10 @@ export default function App() {
     },
     [monthKey, editorName],
   )
+
+  const handlePreview = useCallback((sectionId, value) => {
+    setPreview(sectionId ? { id: sectionId, value } : null)
+  }, [])
 
   async function copyLink() {
     const url = new URL(window.location.href)
@@ -209,7 +222,7 @@ export default function App() {
       <Editor
         open={editorOpen}
         onClose={() => setEditorOpen(false)}
-        issue={issue}
+        issue={savedIssue}
         meta={meta}
         monthKey={monthKey}
         monthLabel={monthLabel(monthKey)}
@@ -218,6 +231,7 @@ export default function App() {
         editorName={editorName}
         onUnlock={handleUnlock}
         onSaveSection={handleSaveSection}
+        onPreview={handlePreview}
       />
     </div>
   )

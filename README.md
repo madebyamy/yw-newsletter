@@ -70,6 +70,25 @@ Press **Print / Save PDF**, then in the browser's print dialog:
 
 Two-sided, flip on long edge, gives you the finished handout.
 
+## Backgrounds and colours
+
+Each month can have its own background pattern. In **Background & Colors**,
+choose an image and it is shrunk, stored with the issue, and laid behind both
+pages. The palette is read from the image itself, so the cards retint to
+match — no colour picking.
+
+- **Pattern strength** controls how far the image shows through. Around 10%
+  suits a busy pattern; the preview updates as you drag.
+- **Remove background** puts the default colours straight back.
+- With no image, the newsletter keeps its standard scheme. Nothing to undo.
+
+Any colour scheme it produces keeps text readable: tinted cards are always
+pale enough for near-black text, and the one strong band is forced dark enough
+for white. Every combination clears the WCAG AA 4.5:1 minimum.
+
+Images are downscaled to 1400px and re-encoded before storing, so a large
+photo becomes a couple of hundred KB rather than several MB.
+
 ## Design
 
 The look follows the Clay design system: cream canvas, Inter at weight 500 with

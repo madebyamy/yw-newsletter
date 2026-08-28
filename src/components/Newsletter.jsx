@@ -1,6 +1,27 @@
 import React from 'react'
+import { numberOr, paletteToStyle } from '../lib/palette'
 
 // ---------------------------------------------------------------- helpers
+
+export const DEFAULT_BG_OPACITY = 0.12
+
+// The sheet's colour scheme. With no background image this returns nothing,
+// so the Clay defaults in the stylesheet stand untouched.
+function sheetProps(issue) {
+  const design = issue.design || {}
+  const image = design.backgroundImage || null
+  const palette = image ? design.palette || null : null
+  const opacity = numberOr(design.backgroundOpacity, DEFAULT_BG_OPACITY)
+
+  return {
+    className: `page paper${palette ? ' has-palette' : ''}`,
+    style: image ? { ...paletteToStyle(palette, opacity), '--bg-opacity': String(opacity) } : undefined,
+    image,
+  }
+}
+
+const Background = ({ image }) =>
+  image ? <div className="page-bg" style={{ backgroundImage: `url(${image})` }} aria-hidden="true" /> : null
 
 const Paragraphs = ({ text, className }) => {
   if (!text) return null
@@ -56,9 +77,11 @@ export function PageOne({ issue, meta }) {
   const ld = issue.leader
   const questions = nonEmpty(t?.questions)
   const supporting = nonEmpty(s?.supporting)
+  const sheet = sheetProps(issue)
 
   return (
-    <div className="page paper">
+    <div className={sheet.className} style={sheet.style}>
+      <Background image={sheet.image} />
       <header className="masthead">
         <div className="masthead-top">
           <span>{m?.unit}</span>
@@ -185,9 +208,11 @@ export function PageTwo({ issue, meta }) {
   const events = nonEmpty(cal?.events).filter((e) => e.date || e.title)
   const birthdays = nonEmpty(cal?.birthdays).filter((b) => b.date || b.name)
   const monogram = (h?.name || '').trim().charAt(0).toUpperCase()
+  const sheet = sheetProps(issue)
 
   return (
-    <div className="page paper">
+    <div className={sheet.className} style={sheet.style}>
+      <Background image={sheet.image} />
       <header className="runhead">
         <span>
           <strong>{m?.audience}</strong> · {m?.unit}

@@ -49,6 +49,40 @@
   --r-pill: 9999px;
 
   --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Card fills. These are the Clay defaults, used whenever no background
+     image is set. Uploading one overrides them with tints from that image;
+     removing it falls straight back to these. */
+  --tint-1: var(--peach);
+  --tint-2: var(--mint);
+  --tint-3: var(--lavender);
+  --tint-4: var(--ochre);
+  --pill-1: var(--pink);
+  --pill-2: var(--ochre);
+  --pill-3: var(--mint);
+  --pill-4: var(--coral);
+  --feature-bg: var(--teal);
+  --feature-fg: var(--on-dark);
+  --bg-opacity: 0.12;
+}
+
+/* --- background pattern -------------------------------------------------- */
+
+.page-bg {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  opacity: var(--bg-opacity);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Keep every real section above the pattern. */
+.page > *:not(.page-bg) {
+  position: relative;
+  z-index: 1;
 }
 
 /* --- the sheet ---------------------------------------------------------- */
@@ -198,7 +232,7 @@
 .theme {
   margin-top: 0.1in;
   padding: 0.105in 0.14in;
-  background: var(--peach);
+  background: var(--tint-1);
   border-radius: var(--r-xl);
   color: var(--ink);
   flex-shrink: 0;
@@ -253,9 +287,9 @@
 .scripture-feature {
   text-align: center;
   padding: 0.085in 0.34in 0.08in;
-  background: var(--teal);
+  background: var(--feature-bg);
   border-radius: var(--r-xl);
-  color: var(--on-dark);
+  color: var(--feature-fg);
 }
 .scripture-feature blockquote {
   margin: 0.045in 0 0.055in;
@@ -263,7 +297,7 @@
   font-weight: 500;
   line-height: 1.3;
   letter-spacing: -0.012em;
-  color: var(--on-dark);
+  color: var(--feature-fg);
 }
 .scripture-feature cite {
   font-style: normal;
@@ -310,7 +344,7 @@
   flex-direction: column;
   justify-content: center;
   padding: 0.1in 0.115in;
-  background: var(--lavender);
+  background: var(--tint-3);
   border-radius: var(--r-lg);
   color: var(--ink);
 }
@@ -376,10 +410,10 @@
   padding: 0.025in 0.075in;
   white-space: nowrap;
 }
-.lesson:nth-child(1) .lesson-label { background: var(--pink);     color: #fff; }
-.lesson:nth-child(2) .lesson-label { background: var(--ochre);    color: var(--ink); }
-.lesson:nth-child(3) .lesson-label { background: var(--mint);     color: var(--ink); }
-.lesson:nth-child(4) .lesson-label { background: var(--coral);    color: #fff; }
+.lesson:nth-child(1) .lesson-label { background: var(--pill-1); color: var(--pill-1-fg, #fff); }
+.lesson:nth-child(2) .lesson-label { background: var(--pill-2); color: var(--pill-2-fg, var(--ink)); }
+.lesson:nth-child(3) .lesson-label { background: var(--pill-3); color: var(--pill-3-fg, var(--ink)); }
+.lesson:nth-child(4) .lesson-label { background: var(--pill-4); color: var(--pill-4-fg, #fff); }
 
 /* title-md */
 .lesson h3 {
@@ -478,7 +512,7 @@
   grid-template-columns: 1.7in 1fr;
   gap: 0.16in;
   align-items: start;
-  background: var(--lavender);
+  background: var(--tint-3);
   border-radius: var(--r-xl);
   padding: 0.16in 0.18in;
   color: var(--ink);
@@ -577,7 +611,7 @@
 
 .activity-panel {
   padding: 0.15in 0.17in;
-  background: var(--ochre);
+  background: var(--tint-4);
   border-radius: var(--r-xl);
   color: var(--ink);
   display: grid;
@@ -762,7 +796,7 @@
 /* mint accent card */
 .challenge {
   padding: 0.105in 0.115in;
-  background: var(--mint);
+  background: var(--tint-2);
   border-radius: var(--r-lg);
   color: var(--ink);
 }
@@ -824,4 +858,36 @@
     break-after: auto;
     page-break-after: auto;
   }
+}
+
+/* --- softened treatment when a background image supplies the palette ------
+   Every card becomes a pale tint of a colour from the image, so near-black
+   text stays readable on all of them. The one exception is the scripture
+   band, whose colour is forced dark enough for white text.
+   Without an image none of this applies and the Clay defaults stand. */
+
+.paper.has-palette .quote-card {
+  background: var(--tint-1);
+  color: var(--ink);
+}
+.paper.has-palette .quote-card blockquote { color: var(--ink); }
+/* --body, not --muted: this sits on a tint rather than the canvas,
+   which costs a little contrast. */
+.paper.has-palette .quote-card .eyebrow,
+.paper.has-palette .quote-card cite { color: var(--body); }
+
+/* Inset chips sit on pale tints now, so they need a firmer white. */
+.paper.has-palette .theme-question,
+.paper.has-palette .activity-meta span,
+.paper.has-palette .bring {
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.paper.has-palette .portrait-fallback { color: var(--pill-3); }
+
+/* The pattern should not show through the cards themselves. */
+.paper.has-palette .lesson,
+.paper.has-palette .scripture-list,
+.paper.has-palette .cal-list {
+  background: var(--canvas);
 }
