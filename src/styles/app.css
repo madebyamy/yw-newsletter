@@ -594,3 +594,20 @@ body {
 
 .loading .link-btn { font-size: 16px; }
 .loading p { margin: 0 0 8px; }
+
+/* Quiet way back in for a leader who does not have the ?edit=1 link to hand.
+   Deliberately understated — the passcode is the actual gate, this only
+   reveals the button. */
+.reader-foot {
+  padding: 8px 24px 32px;
+  text-align: center;
+}
+.reader-foot .link-btn {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted-soft);
+  text-decoration: none;
+}
+.reader-foot .link-btn:hover { color: var(--muted); text-decoration: underline; }

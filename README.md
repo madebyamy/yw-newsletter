@@ -81,6 +81,9 @@ Two-sided, flip on long edge, gives you the finished handout.
 leader one — so forwarding it can never hand out editing. **Copy leader link**
 is the one to send other leaders.
 
+If a leader does not have the link to hand, a small **Leaders** link at the
+foot of the page adds the flag — so nobody is ever locked out.
+
 Opening a leader link remembers it on that device, so leaders only need it
 once. **Hide editing here**, in the editor footer, forgets it again — useful
 if you hand your phone to one of the girls.

@@ -389,6 +389,21 @@ export default function App() {
         </main>
       )}
 
+      {!leaderMode && (
+        <footer className="reader-foot no-print">
+          <button
+            className="link-btn"
+            onClick={() => {
+              const url = new URL(window.location.href)
+              url.searchParams.set('edit', '1')
+              window.location.href = url.toString()
+            }}
+          >
+            Leaders
+          </button>
+        </footer>
+      )}
+
       <Editor
         open={editorOpen}
         onClose={() => setEditorOpen(false)}
