@@ -204,7 +204,7 @@ export function PageOne({ issue, meta }) {
 
 // ---------------------------------------------------------------- page two
 
-export function PageTwo({ issue, meta }) {
+export function PageTwo({ issue, meta, scheduled = [] }) {
   const m = issue.masthead
   const h = issue.highlight
   const a = issue.activity
@@ -213,7 +213,10 @@ export function PageTwo({ issue, meta }) {
 
   const facts = nonEmpty(h?.facts).filter((f) => f.label || f.value)
   const bring = nonEmpty(a?.bring)
-  const events = nonEmpty(cal?.events).filter((e) => e.date || e.title)
+  // The sheet is the schedule; anything typed into the Calendar section is
+  // shown after it rather than replaced by it.
+  const manualEvents = nonEmpty(cal?.events).filter((e) => e.date || e.title)
+  const events = [...scheduled, ...manualEvents]
   const birthdays = nonEmpty(cal?.birthdays).filter((b) => b.date || b.name)
   const monogram = (h?.name || '').trim().charAt(0).toUpperCase()
   const sheet = sheetProps(issue)

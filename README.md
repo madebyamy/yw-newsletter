@@ -108,6 +108,33 @@ a blank page.
 > Because a month is unpublished until you say otherwise, **September needs
 > publishing once** — otherwise the girls will see "No issues yet".
 
+## Ward activities from the schedule sheet
+
+The activity schedule lives in a published Google Sheet, and the newsletter
+reads it live — change a date there and the newsletter follows, with no
+copying. Each month's activities appear in the Calendar block.
+
+Only the **first two columns** are read: the date and the activity name.
+Anything further right stays private to the leaders, so working notes never
+reach a page the girls read.
+
+Dates are understood as `Sep 12`, `September 12` or `Mar 27-28`, and a header
+row needs no special handling — "date" is not a date, so it is skipped like any
+other unparseable line. Because a tab labelled 2026 runs on into the next
+January, the parser rolls the year forward when the months stop advancing, so
+the two Januaries land in 2026 and 2027 correctly.
+
+Set up in Netlify:
+
+| Key | Value |
+|---|---|
+| `ACTIVITY_SHEET_CSV_URL` | the published sheet URL |
+| `ACTIVITY_SHEET_YEAR` | the year the tab starts in (defaults to 2026) |
+
+The function fetches server-side and caches for five minutes, so the sheet is
+not hit on every page load. Without the variable set, the newsletter simply
+carries on with no activities.
+
 ## Turning blocks off for a month
 
 **Show or Hide Blocks** ticks any of the eight blocks off for the month you are

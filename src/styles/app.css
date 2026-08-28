@@ -611,3 +611,10 @@ body {
   text-decoration: none;
 }
 .reader-foot .link-btn:hover { color: var(--muted); text-decoration: underline; }
+
+.schedule-note {
+  padding: 12px 14px;
+  background: var(--surface-card);
+  border-radius: var(--r-md);
+  margin-bottom: 16px;
+}

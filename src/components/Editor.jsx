@@ -162,6 +162,12 @@ export default function Editor({
                 <BackgroundDesigner draft={draft} onChange={setField} />
               )}
               {section.id === 'calendar' && (
+                <p className="import-hint schedule-note">
+                  Ward activities come straight from the schedule sheet and update themselves —
+                  there is no need to type them here. Anything you add below appears after them.
+                </p>
+              )}
+              {section.id === 'calendar' && (
                 <BirthdayImport
                   monthKey={monthKey}
                   monthLabel={monthLabel}

@@ -89,6 +89,22 @@ export async function listMonths() {
   return { ok: true, months: months.sort((a, b) => b.month.localeCompare(a.month)) }
 }
 
+// The ward activity schedule, read live from the published Google Sheet by
+// the function. Returns {} when no sheet is configured, so the newsletter
+// simply carries on without one.
+export async function loadActivities() {
+  const result = await call('GET', { path: '?activities=1' })
+  if (result.kind === 'ok') {
+    return {
+      ok: true,
+      months: result.json.months || {},
+      configured: result.json.configured === true,
+      error: result.json.error || null,
+    }
+  }
+  return { ok: false, months: {}, configured: false, error: null }
+}
+
 // ------------------------------------------------------------------ auth
 
 export async function verifyPasscode(passcode) {

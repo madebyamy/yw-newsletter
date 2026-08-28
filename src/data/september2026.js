@@ -144,13 +144,9 @@ export default {
   },
 
   calendar: {
-    events: [
-      { date: 'Sun · Sep 6', title: 'Fast Sunday — Study the Chapter', detail: 'Young Women class' },
-      { date: 'Sun · Sep 13', title: 'The Restoration of the Priesthood', detail: 'Young Women class' },
-      { date: 'Sun · Sep 20', title: 'Understanding Priesthood Keys', detail: 'Young Women class' },
-      { date: 'Sun · Sep 27', title: 'Becoming a Covenant Daughter of God', detail: 'Young Women class' },
-      { date: 'Wed · Sep 16', title: 'One-Match Fire Challenge', detail: 'Add time and location' },
-    ],
+    // Activities come live from the ward schedule sheet, so nothing is
+    // seeded here — anything added below appears after those.
+    events: [],
     birthdays: [],
   },
 
