@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { SECTIONS, SECTION_MAP, emptyValue } from '../data/schema'
+import { churchOnly, loadRoster, parseExport, rowsForMonth, saveRoster } from '../lib/birthdays'
 
 export default function Editor({
   open,
   onClose,
   issue,
   meta,
+  monthKey,
   monthLabel,
   mode,
   unlocked,
@@ -134,6 +136,13 @@ export default function Editor({
 
           {unlocked && section && draft && (
             <div>
+              {section.id === 'calendar' && (
+                <BirthdayImport
+                  monthKey={monthKey}
+                  monthLabel={monthLabel}
+                  onFill={(rows) => setField('birthdays', rows)}
+                />
+              )}
               {section.fields.map((field) => (
                 <Field
                   key={field.key}
@@ -174,6 +183,90 @@ export default function Editor({
         )}
       </aside>
     </>
+  )
+}
+
+// ---------------------------------------------------------------- birthdays
+
+// Pulls Church-tagged birthdays out of a birthday-tracker export and fills in
+// the ones falling in this issue's month. The roster is remembered, so later
+// months only need one click.
+function BirthdayImport({ monthKey, monthLabel, onFill }) {
+  const [roster, setRoster] = useState(() => loadRoster())
+  const [note, setNote] = useState(null)
+
+  const availableThisMonth = useMemo(
+    () => (roster ? rowsForMonth(roster.roster, monthKey).length : 0),
+    [roster, monthKey],
+  )
+
+  function applyRoster(list, { announceImport } = {}) {
+    const rows = rowsForMonth(list, monthKey)
+    onFill(rows)
+    setNote({
+      kind: rows.length ? 'ok' : 'info',
+      text: rows.length
+        ? `Filled ${rows.length} ${rows.length === 1 ? 'birthday' : 'birthdays'} for ${monthLabel}. Press Save section to keep it.`
+        : `No Church birthdays fall in ${monthLabel}.` +
+          (announceImport ? ` ${list.length} were imported for other months.` : ''),
+    })
+  }
+
+  async function handleFile(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setNote(null)
+    try {
+      const list = churchOnly(parseExport(await file.text()))
+      if (list.length === 0) {
+        setNote({ kind: 'error', text: 'That export has no birthdays tagged Church.' })
+        return
+      }
+      saveRoster(list)
+      setRoster({ roster: list, savedAt: new Date().toISOString() })
+      applyRoster(list, { announceImport: true })
+    } catch (err) {
+      setNote({ kind: 'error', text: err.message })
+    } finally {
+      e.target.value = ''
+    }
+  }
+
+  return (
+    <div className="import-panel">
+      <span className="field-label">From your birthday tracker</span>
+
+      {note && <div className={`notice ${note.kind}`}>{note.text}</div>}
+
+      {roster ? (
+        <>
+          <p className="import-hint">
+            {roster.roster.length} Church {roster.roster.length === 1 ? 'birthday' : 'birthdays'} saved
+            {availableThisMonth > 0
+              ? ` · ${availableThisMonth} in ${monthLabel}`
+              : ` · none in ${monthLabel}`}
+          </p>
+          <button
+            type="button"
+            className="btn"
+            onClick={() => applyRoster(roster.roster)}
+            disabled={availableThisMonth === 0}
+          >
+            Fill {monthLabel} birthdays
+          </button>
+        </>
+      ) : (
+        <p className="import-hint">
+          Open the birthday tracker, press <strong>Export</strong>, then choose that file here. Only
+          birthdays tagged <strong>Church</strong> are used.
+        </p>
+      )}
+
+      <label className="btn btn-file">
+        {roster ? 'Re-import updated file' : 'Choose export file'}
+        <input type="file" accept=".json,application/json" onChange={handleFile} hidden />
+      </label>
+    </div>
   )
 }
 

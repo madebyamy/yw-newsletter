@@ -211,6 +211,7 @@ export default function App() {
         onClose={() => setEditorOpen(false)}
         issue={issue}
         meta={meta}
+        monthKey={monthKey}
         monthLabel={monthLabel(monthKey)}
         mode={mode}
         unlocked={unlocked}

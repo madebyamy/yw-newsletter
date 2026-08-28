@@ -426,6 +426,32 @@ body {
   cursor: pointer;
 }
 
+/* --- birthday import ---------------------------------------------------- */
+
+.import-panel {
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-lg);
+  background: var(--surface-soft);
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.import-hint {
+  margin: 0 0 12px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.import-hint strong { color: var(--ink); font-weight: 600; }
+
+.import-panel .btn { margin-right: 8px; }
+
+.btn-file {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
 /* --- unlock ------------------------------------------------------------- */
 
 .unlock { max-width: 340px; }
