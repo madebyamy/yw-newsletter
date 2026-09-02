@@ -115,7 +115,12 @@ with real pickers — a date and time for each activity, a date for each
 birthday. The year on a birthday is ignored; only the day matters.
 
 Both lists read in date order, earliest first, however they were typed in —
-so you can add activities as you hear about them rather than in sequence.
+so you can add activities as you hear about them rather than in sequence. Each
+activity shows its time under the date, keeping the left column as "when" and
+the right as "what".
+
+Birthdays are their own list, in date order, with a cake and balloons on the
+heading and a pink marker beside each name.
 
 **Show as** sets how the month starts out:
 

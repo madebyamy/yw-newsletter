@@ -147,6 +147,69 @@ function MonthCalendar({ monthKey, events, birthdays }) {
   )
 }
 
+// One dated row. The time sits under the date rather than trailing the title,
+// so the left column reads as "when" and the right as "what".
+const EventRow = ({ event }) => (
+  <div className="cal-row">
+    <span className="cal-date">
+      {formatDate(event.date)}
+      {event.time && <span className="cal-time">{formatTime(event.time)}</span>}
+    </span>
+    <span>
+      <span className="cal-title">{event.title}</span>
+      {event.detail && (
+        <>
+          {' '}
+          <span className="cal-detail">— {event.detail}</span>
+        </>
+      )}
+    </span>
+  </div>
+)
+
+const CakeIcon = () => (
+  <svg viewBox="0 0 24 24" className="bd-icon" aria-hidden="true">
+    <path className="bd-flame" d="M12 2.4c.9 1 1.3 1.7 1.3 2.3a1.3 1.3 0 0 1-2.6 0c0-.6.4-1.3 1.3-2.3Z" />
+    <rect className="bd-candle" x="11.4" y="5.2" width="1.2" height="3.1" rx="0.6" />
+    <path className="bd-icing" d="M4.6 12.4c0-1.2 1-2.2 2.2-2.2h10.4c1.2 0 2.2 1 2.2 2.2v1.1c-.9 0-.9.9-1.8.9s-.9-.9-1.8-.9-.9.9-1.8.9-.9-.9-1.8-.9-.9.9-1.8.9-.9-.9-1.8-.9-.9.9-1.8.9-.9-.9-1.8-.9Z" />
+    <path className="bd-base" d="M4.6 14.6h14.8v5.1c0 .9-.7 1.6-1.6 1.6H6.2c-.9 0-1.6-.7-1.6-1.6Z" />
+  </svg>
+)
+
+const BalloonIcon = () => (
+  <svg viewBox="0 0 24 24" className="bd-icon" aria-hidden="true">
+    <ellipse className="bd-balloon-a" cx="9" cy="8" rx="4.6" ry="5.6" />
+    <ellipse className="bd-balloon-b" cx="15.4" cy="10.2" rx="3.7" ry="4.5" />
+    <path className="bd-string" d="M9 13.8c0 2.6 1.4 3.6 1.4 5.6M15.4 15c0 2-1 2.8-1 4.4" />
+  </svg>
+)
+
+// Birthdays as a proper list in date order, with a cake on the heading and a
+// balloon beside each name.
+const Birthdays = ({ birthdays, leaderMode }) => (
+  <div className="birthdays">
+    <div className="bd-head">
+      <CakeIcon />
+      <span className="eyebrow">Happy Birthday</span>
+      <BalloonIcon />
+    </div>
+
+    {birthdays.length > 0 ? (
+      <ul className="birthday-list">
+        {birthdays.map((b, i) => (
+          <li key={i}>
+            <span className="bd-bullet" />
+            <span className="bd-date">{formatDate(b.date)}</span>
+            <span className="bd-name">{b.name}</span>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      leaderMode && <p className="empty-hint no-print">Add birthdays in the editor.</p>
+    )}
+  </div>
+)
+
 // A scripture reference, linked to churchofjesuschrist.org where the wording
 // is recognisable. On paper it just reads as text; on a phone it is tappable.
 const Ref = ({ children }) => {
@@ -441,20 +504,7 @@ export function PageTwo({ issue, meta, monthKey, leaderMode = false, viewOverrid
               {events.length > 0 && (
                 <div className="cal-names">
                   {events.map((e, i) => (
-                    <div key={i} className="cal-row">
-                      <span className="cal-date">{formatDate(e.date)}</span>
-                      <span>
-                        <span className="cal-title">{e.title}</span>
-                        {(e.time || e.detail) && (
-                          <>
-                            {' '}
-                            <span className="cal-detail">
-                              — {[e.time && formatTime(e.time), e.detail].filter(Boolean).join(' · ')}
-                            </span>
-                          </>
-                        )}
-                      </span>
-                    </div>
+                    <EventRow key={i} event={e} />
                   ))}
                 </div>
               )}
@@ -463,20 +513,7 @@ export function PageTwo({ issue, meta, monthKey, leaderMode = false, viewOverrid
             <div className="cal-list">
               {events.length > 0 ? (
                 events.map((e, i) => (
-                  <div key={i} className="cal-row">
-                    <span className="cal-date">{formatDate(e.date)}</span>
-                    <span>
-                      <span className="cal-title">{e.title}</span>
-                      {(e.time || e.detail) && (
-                        <>
-                          {' '}
-                          <span className="cal-detail">
-                            — {[e.time && formatTime(e.time), e.detail].filter(Boolean).join(' · ')}
-                          </span>
-                        </>
-                      )}
-                    </span>
-                  </div>
+                  <EventRow key={i} event={e} />
                 ))
               ) : (
                 leaderMode && (
@@ -486,22 +523,7 @@ export function PageTwo({ issue, meta, monthKey, leaderMode = false, viewOverrid
             </div>
           )}
 
-          <div className="birthdays">
-            <div className="eyebrow">Happy Birthday</div>
-            {birthdays.length > 0 ? (
-              <div className="birthday-list">
-                {birthdays.map((b, i) => (
-                  <span key={i}>
-                    <strong>{formatDate(b.date)}</strong> {b.name}
-                  </span>
-                ))}
-              </div>
-            ) : (
-              leaderMode && (
-                <p className="empty-hint no-print">Add birthdays in the editor.</p>
-              )
-            )}
-          </div>
+          <Birthdays birthdays={birthdays} leaderMode={leaderMode} />
         </div>
         )}
 

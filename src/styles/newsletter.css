@@ -712,7 +712,7 @@
 }
 .cal-row {
   display: grid;
-  grid-template-columns: 0.8in 1fr;
+  grid-template-columns: 0.92in 1fr;
   gap: 0.08in;
   padding: 0.045in 0;
   border-bottom: 1px solid var(--hairline-soft);
@@ -732,26 +732,77 @@
 
 .birthdays {
   margin-top: 0.1in;
-  padding: 0.105in 0.115in;
+  padding: 0.1in 0.115in;
   background: var(--surface-card);
   border-radius: var(--r-lg);
 }
-.birthdays .eyebrow { color: var(--muted); }
-.birthday-list {
+
+.bd-head {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.04in;
-  margin-top: 0.055in;
+  align-items: center;
+  gap: 0.05in;
+  margin-bottom: 0.055in;
 }
-.birthday-list span {
-  font-size: calc(6.7pt * var(--ts));
+.bd-head .eyebrow { color: var(--muted); }
+
+.bd-icon {
+  width: 0.16in;
+  height: 0.16in;
+  flex-shrink: 0;
+}
+.bd-flame { fill: #f6b93b; }
+.bd-candle { fill: var(--canvas); stroke: var(--cal-birthday); stroke-width: 0.9; }
+.bd-icing { fill: var(--cal-birthday); }
+.bd-base { fill: color-mix(in srgb, var(--cal-birthday) 45%, #fff); }
+.bd-balloon-a { fill: var(--cal-birthday); }
+.bd-balloon-b { fill: color-mix(in srgb, var(--cal-activity) 80%, #fff); }
+.bd-string { stroke: var(--muted); stroke-width: 0.9; fill: none; stroke-linecap: round; }
+
+/* A list in date order rather than a wrapped row of pills, so the girls can
+   run down it and find themselves. */
+.birthday-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.birthday-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.05in;
+  padding: 0.026in 0;
+  font-size: calc(6.9pt * var(--ts));
+  line-height: 1.25;
+  border-bottom: 1px dotted color-mix(in srgb, var(--cal-birthday) 30%, transparent);
+}
+.birthday-list li:last-child { border-bottom: 0; }
+
+.bd-bullet {
+  flex-shrink: 0;
+  width: 0.045in;
+  height: 0.045in;
+  border-radius: 999px;
+  background: var(--cal-birthday);
+  align-self: center;
+}
+.bd-date {
+  flex-shrink: 0;
+  min-width: 0.52in;
+  font-weight: 600;
+  color: var(--cal-birthday);
+  filter: saturate(0.85) brightness(0.75);
+}
+.bd-name { color: var(--ink); font-weight: 500; }
+
+/* The time under the date in a calendar row. */
+.cal-time {
+  display: block;
+  font-size: calc(5.7pt * var(--ts));
   font-weight: 500;
-  color: var(--ink);
-  background: var(--canvas);
-  border-radius: var(--r-pill);
-  padding: 0.025in 0.08in;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--muted-soft);
+  margin-top: 0.008in;
 }
-.birthday-list span strong { color: var(--pink); font-weight: 600; }
 
 .empty-hint {
   font-size: calc(6.5pt * var(--ts));
