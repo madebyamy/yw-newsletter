@@ -159,27 +159,36 @@ export const SECTIONS = [
     fields: [
       { key: 'view', label: 'Show as', type: 'internal' },
       {
-        key: 'events',
-        label: 'Activities this month',
+        key: 'entries',
+        label: 'What is on this month',
         type: 'objectList',
-        itemLabel: 'Activity',
+        itemLabel: 'Entry',
+        addLabel: 'Add activity or birthday',
         fields: [
+          {
+            key: 'type',
+            label: 'Kind',
+            type: 'select',
+            options: [
+              { value: 'yw', label: 'YW Activity' },
+              { value: 'combined', label: 'Combined Activity' },
+              { value: 'ward', label: 'Ward Activity' },
+              { value: 'stake', label: 'Stake Activity' },
+              { value: 'birthday', label: 'Birthday' },
+              { value: 'other', label: 'Other' },
+            ],
+          },
           { key: 'date', label: 'Date', type: 'date' },
-          { key: 'time', label: 'Time', type: 'time' },
-          { key: 'title', label: 'Activity', type: 'text' },
-          { key: 'detail', label: 'Where', type: 'text' },
+          { key: 'time', label: 'Time', type: 'time', hideWhenType: 'birthday' },
+          { key: 'title', label: 'Name', type: 'text' },
+          { key: 'detail', label: 'Where', type: 'text', hideWhenType: 'birthday' },
         ],
       },
-      {
-        key: 'birthdays',
-        label: 'Birthdays',
-        type: 'objectList',
-        itemLabel: 'Birthday',
-        fields: [
-          { key: 'date', label: 'Date', type: 'date', hint: 'The year is ignored' },
-          { key: 'name', label: 'Name', type: 'text' },
-        ],
-      },
+      // Kept so months saved before the single list are still readable; the
+      // editor folds them into "entries" the first time such a month is saved.
+      { key: 'events', label: 'Activities (old format)', type: 'internal' },
+      { key: 'birthdays', label: 'Birthdays (old format)', type: 'internal' },
+      { key: 'entriesMigrated', label: 'Converted', type: 'internal' },
     ],
   },
   {

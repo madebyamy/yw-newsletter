@@ -65,6 +65,15 @@
   --feature-fg: var(--on-dark);
   --bg-opacity: 0.12;
 
+  /* One colour per girl in the birthday list, picked from her name so it
+     stays the same month to month. */
+  --name-1: #c2185b;
+  --name-2: #6a4bab;
+  --name-3: #1f7a6b;
+  --name-4: #b06a12;
+  --name-5: #2f6fa8;
+  --name-6: #a8386b;
+
   /* Type scale. 1 everywhere except the phone reading view. */
   --ts: 1;
 }
@@ -1094,7 +1103,7 @@
 }
 
 .cal-day {
-  min-height: 0.3in;
+  min-height: 0.265in;
   border-radius: 0.035in;
   border: 1px dotted var(--hairline);
   background: rgba(255, 255, 255, 0.5);
@@ -1152,7 +1161,7 @@
 }
 
 /* Names for the dots above. */
-.cal-names { margin-top: 0.07in; }
+.cal-names { margin-top: 0.055in; }
 
 
 /* --- hover popup ---------------------------------------------------------
@@ -1225,4 +1234,53 @@
     padding-top: 0 !important;
     border-top: 0 !important;
   }
+}
+
+
+/* --- entry icons ---------------------------------------------------------
+   One mark per kind of entry, leading its row. Drawn rather than typed, so
+   they take the palette and print the same on every machine. */
+
+.entry-icon {
+  width: calc(0.115in * var(--ts));
+  height: calc(0.115in * var(--ts));
+  flex-shrink: 0;
+  margin-top: 0.012in;
+  fill: currentColor;
+}
+.entry-icon.is-yw { color: var(--cal-activity); }
+.entry-icon.is-combined { color: var(--tint-3); }
+.entry-icon.is-ward { color: var(--muted); }
+.entry-icon.is-stake { color: var(--feature-bg); }
+.entry-icon.is-birthday { color: var(--cal-birthday); }
+.entry-icon.is-other { color: var(--tint-4); }
+
+.entry-icon .ei-center { fill: var(--canvas); }
+.entry-icon .ei-door,
+.entry-icon .ei-candle { fill: var(--canvas); }
+.entry-icon .ei-spire { opacity: 0.75; }
+.entry-icon .ei-flame { fill: #f6b93b; }
+.entry-icon .ei-base { opacity: 0.55; }
+
+/* The row's right-hand side: icon, then what it is. */
+.cal-what {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.05in;
+}
+
+/* --- birthday list, larger and colour-coded ------------------------------ */
+
+.birthday-list li {
+  font-size: calc(8.2pt * var(--ts));
+  padding: 0.028in 0;
+}
+.bd-name {
+  font-weight: 600;
+  letter-spacing: -0.008em;
+}
+.bd-date {
+  font-weight: 600;
+  color: var(--muted);
+  filter: none;
 }

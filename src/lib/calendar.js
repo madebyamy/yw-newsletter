@@ -122,24 +122,22 @@ export function sortByDate(entries, monthKey) {
     .map((item) => item.entry)
 }
 
-// Groups activities and birthdays onto the days they fall on.
-export function entriesByDay({ events = [], birthdays = [], monthKey }) {
+// Groups the month's entries onto the days they fall on. Takes the single
+// list, so a birthday is placed once rather than counted twice.
+export function entriesByDay({ entries = [], monthKey }) {
   const monthIndex = monthIndexOf(monthKey)
   const byDay = new Map()
 
-  const add = (day, entry) => {
-    if (!day) return
+  for (const entry of entries) {
+    const day = dayOf(entry.date, monthIndex)
+    const label = entry.title || entry.name
+    if (!day || !label) continue
     if (!byDay.has(day)) byDay.set(day, [])
-    byDay.get(day).push(entry)
-  }
-
-  for (const b of birthdays) {
-    const day = dayOf(b.date, monthIndex)
-    if (day && b.name) add(day, { kind: 'birthday', label: b.name })
-  }
-  for (const e of events) {
-    const day = dayOf(e.date, monthIndex)
-    if (day && e.title) add(day, { kind: 'activity', label: e.title })
+    byDay.get(day).push({
+      kind: entry.type === 'birthday' ? 'birthday' : 'activity',
+      type: entry.type || 'other',
+      label,
+    })
   }
 
   return byDay

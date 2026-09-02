@@ -1,6 +1,8 @@
 import React from 'react'
 import { numberOr, paletteToStyle } from '../lib/palette'
 import { hiddenSet } from '../data/schema'
+import { readEntries, isBirthday, colorForName } from '../lib/entries'
+import EntryIcon from './EntryIcon'
 import { linkifyReference } from '../lib/scriptures'
 import {
   WEEKDAY_INITIALS,
@@ -84,9 +86,9 @@ const nonEmpty = (list) => (Array.isArray(list) ? list.filter(Boolean) : [])
 // activities in green and birthdays in pink on the day they fall. Names show
 // where there is room; on a phone the cells shrink to dots and the list
 // underneath carries the detail.
-function MonthCalendar({ monthKey, events, birthdays }) {
+function MonthCalendar({ monthKey, entries }) {
   const weeks = monthGrid(monthKey)
-  const byDay = entriesByDay({ events, birthdays, monthKey })
+  const byDay = entriesByDay({ entries, monthKey })
 
   return (
     <div className="cal-grid">
@@ -153,16 +155,26 @@ const EventRow = ({ event }) => (
   <div className="cal-row">
     <span className="cal-date">
       {formatDate(event.date)}
-      {event.time && <span className="cal-time">{formatTime(event.time)}</span>}
-    </span>
-    <span>
-      <span className="cal-title">{event.title}</span>
-      {event.detail && (
-        <>
-          {' '}
-          <span className="cal-detail">— {event.detail}</span>
-        </>
+      {event.time && !isBirthday(event) && (
+        <span className="cal-time">{formatTime(event.time)}</span>
       )}
+    </span>
+    <span className="cal-what">
+      <EntryIcon type={event.type || 'other'} />
+      <span>
+        <span
+          className="cal-title"
+          style={isBirthday(event) ? { color: colorForName(event.title) } : undefined}
+        >
+          {event.title}
+        </span>
+        {event.detail && !isBirthday(event) && (
+          <>
+            {' '}
+            <span className="cal-detail">— {event.detail}</span>
+          </>
+        )}
+      </span>
     </span>
   </div>
 )
@@ -196,13 +208,18 @@ const Birthdays = ({ birthdays, leaderMode }) => (
 
     {birthdays.length > 0 ? (
       <ul className="birthday-list">
-        {birthdays.map((b, i) => (
-          <li key={i}>
-            <span className="bd-bullet" />
-            <span className="bd-date">{formatDate(b.date)}</span>
-            <span className="bd-name">{b.name}</span>
-          </li>
-        ))}
+        {birthdays.map((b, i) => {
+          const color = colorForName(b.title || b.name)
+          return (
+            <li key={i}>
+              <span className="bd-bullet" style={{ background: color }} />
+              <span className="bd-date">{formatDate(b.date)}</span>
+              <span className="bd-name" style={{ color }}>
+                {b.title || b.name}
+              </span>
+            </li>
+          )
+        })}
       </ul>
     ) : (
       leaderMode && <p className="empty-hint no-print">Add birthdays in the editor.</p>
@@ -375,15 +392,15 @@ export function PageTwo({ issue, meta, monthKey, leaderMode = false, viewOverrid
 
   const facts = nonEmpty(h?.facts).filter((f) => f.label || f.value)
   const bring = nonEmpty(a?.bring)
-  // Read in date order regardless of the order they were typed in.
-  const events = sortByDate(
-    nonEmpty(cal?.events).filter((e) => e.date || e.title),
-    monthKey,
-  )
-  const birthdays = sortByDate(
-    nonEmpty(cal?.birthdays).filter((b) => b.date || b.name),
-    monthKey,
-  )
+  // One list for the month, read in date order regardless of the order it was
+  // typed in. Birthdays live in it too, and are pulled out again for their own
+  // block below — entering one puts it in both places.
+  const entries = sortByDate(readEntries(cal), monthKey)
+  const events = entries
+  const birthdays = entries.filter(isBirthday)
+  // Under the month grid only the activities are named; birthdays have their
+  // own block, so listing them twice would just cost space.
+  const activityEntries = entries.filter((e) => !isBirthday(e))
   const monogram = (h?.name || '').trim().charAt(0).toUpperCase()
   const sheet = sheetProps(issue)
   const hidden = hiddenSet(issue)
@@ -500,10 +517,10 @@ export function PageTwo({ issue, meta, monthKey, leaderMode = false, viewOverrid
 
           {calendarView === 'calendar' ? (
             <>
-              <MonthCalendar monthKey={monthKey} events={events} birthdays={birthdays} />
-              {events.length > 0 && (
+              <MonthCalendar monthKey={monthKey} entries={entries} />
+              {activityEntries.length > 0 && (
                 <div className="cal-names">
-                  {events.map((e, i) => (
+                  {activityEntries.map((e, i) => (
                     <EventRow key={i} event={e} />
                   ))}
                 </div>

@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { HIDEABLE, SECTIONS, SECTION_MAP, emptyValue } from '../data/schema'
 import { numberOr, prepareBackground, prepareImage } from '../lib/palette'
+import { needsMigration, legacyToEntries } from '../lib/entries'
+import EntryIcon from './EntryIcon'
 
 export default function Editor({
   open,
@@ -55,7 +57,15 @@ export default function Editor({
   function openSection(id) {
     setActiveId(id)
     // Deep copy so editing never mutates what is on screen until you save.
-    setDraft(JSON.parse(JSON.stringify(issue[id] ?? {})))
+    const copy = JSON.parse(JSON.stringify(issue[id] ?? {}))
+
+    // A month saved before the single list gets converted on open. The old
+    // keys are left in place rather than deleted, so nothing is thrown away.
+    if (id === 'calendar' && needsMigration(copy)) {
+      copy.entries = legacyToEntries(copy)
+      copy.entriesMigrated = true
+    }
+    setDraft(copy)
     setMessage(null)
   }
 
@@ -665,14 +675,17 @@ function Field({ field, value, onChange, idPrefix = 'f' }) {
 
   if (field.type === 'objectList') {
     const items = Array.isArray(value) ? value : []
-    const blank = Object.fromEntries(field.fields.map((f) => [f.key, '']))
+    const blank = Object.fromEntries(
+      field.fields.map((f) => [f.key, f.type === 'select' ? f.options[0].value : '']),
+    )
     return (
       <div className="field">
         <span className="field-label">{field.label}</span>
         {items.map((item, i) => (
           <div key={i} className="object-item">
             <div className="object-item-head">
-              <span>
+              <span className="object-item-name">
+                {item?.type && <EntryIcon type={item.type} className="ei-inline" />}
                 {field.itemLabel || 'Item'} {i + 1}
               </span>
               <button
@@ -683,22 +696,45 @@ function Field({ field, value, onChange, idPrefix = 'f' }) {
                 Remove
               </button>
             </div>
-            {field.fields.map((sub) => (
-              <Field
-                key={sub.key}
-                field={sub}
-                idPrefix={`${idPrefix}-${field.key}-${i}`}
-                value={item?.[sub.key] ?? ''}
-                onChange={(v) =>
-                  onChange(items.map((row, j) => (j === i ? { ...row, [sub.key]: v } : row)))
-                }
-              />
-            ))}
+            {field.fields
+              // A birthday has no time or place — just a date and a name.
+              .filter((sub) => !(sub.hideWhenType && item?.type === sub.hideWhenType))
+              .map((sub) => (
+                <Field
+                  key={sub.key}
+                  field={sub}
+                  idPrefix={`${idPrefix}-${field.key}-${i}`}
+                  value={item?.[sub.key] ?? ''}
+                  onChange={(v) =>
+                    onChange(items.map((row, j) => (j === i ? { ...row, [sub.key]: v } : row)))
+                  }
+                />
+              ))}
           </div>
         ))}
         <button type="button" className="btn-add" onClick={() => onChange([...items, { ...blank }])}>
-          + Add {field.itemLabel ? field.itemLabel.toLowerCase() : 'item'}
+          + {field.addLabel || `Add ${field.itemLabel ? field.itemLabel.toLowerCase() : 'item'}`}
         </button>
+      </div>
+    )
+  }
+
+  if (field.type === 'select') {
+    return (
+      <div className="field">
+        <label htmlFor={`f-${field.key}`}>{field.label}</label>
+        <select
+          id={`f-${field.key}`}
+          className="input"
+          value={value || field.options[0].value}
+          onChange={(e) => onChange(e.target.value)}
+        >
+          {field.options.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </select>
       </div>
     )
   }

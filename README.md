@@ -110,24 +110,36 @@ a blank page.
 
 ## The calendar
 
-Activities and birthdays are typed into the **Calendar & Birthdays** section
-with real pickers — a date and time for each activity, a date for each
-birthday. The year on a birthday is ignored; only the day matters.
+Everything in a month goes in **one list**. Press *Add activity or birthday*,
+pick what kind it is, and fill in the rest:
 
-Both lists read in date order, earliest first, however they were typed in —
-so you can add activities as you hear about them rather than in sequence. Each
-activity shows its time under the date, keeping the left column as "when" and
-the right as "what".
+| Kind | Mark |
+|---|---|
+| YW Activity | flower |
+| Combined Activity | plus |
+| Ward Activity | meetinghouse |
+| Stake Activity | larger building |
+| Birthday | cake |
+| Other | star |
 
-Birthdays are their own list, in date order, with a cake and balloons on the
-heading and a pink marker beside each name.
+The mark leads the entry wherever it appears. **A birthday goes in both
+places** — the calendar and the birthday block — from the single entry, and
+its form drops the time and place, since a birthday has neither.
+
+Dates and times use real pickers. The year on a birthday is ignored; only the
+day matters. The list reads in date order however it was typed in, with the
+time under the date.
+
+Birthdays are listed in date order at a larger size, and each girl's name has
+its own colour — worked out from her name, so it stays the same month to month.
 
 **Show as** sets how the month starts out:
 
 - **List of dates** — a compact list of what is on.
 - **Month calendar** — a month grid in the spirit of a bullet journal: a soft
   dot grid, dotted rules, activities in green and birthdays in pink on the day
-  they fall, with the names listed underneath.
+  they fall. The activities are named under the grid; birthdays are not
+  repeated there, since they have their own block.
 
 The grid sits in the same column as the list, so switching between them does
 not change what else fits on the page.
@@ -143,6 +155,9 @@ Anyone reading can switch for themselves with the small **List / Calendar**
 button beside the Calendar heading. That choice is theirs alone: it is not
 saved, does not affect other readers, and the button never prints. What they
 are looking at is what they would print.
+
+Months written before the single list are converted the first time they are
+opened in the editor. The old fields are left in place rather than deleted.
 
 ## Turning blocks off for a month
 
