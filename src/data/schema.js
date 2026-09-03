@@ -34,7 +34,6 @@ export const SECTIONS = [
   {
     id: 'masthead',
     label: 'Header & Masthead',
-    page: 1,
     hint: 'The banner across the top of page 1. Usually set once and left alone.',
     fields: [
       { key: 'unit', label: 'Ward or branch', type: 'text' },
@@ -47,7 +46,6 @@ export const SECTIONS = [
   {
     id: 'theme',
     label: 'Monthly Theme',
-    page: 1,
     hint: 'Comes from the For the Strength of Youth chapter for this month.',
     fields: [
       { key: 'title', label: 'Theme title', type: 'text' },
@@ -57,104 +55,8 @@ export const SECTIONS = [
     ],
   },
   {
-    id: 'scriptures',
-    label: 'Monthly Scriptures',
-    page: 1,
-    hint: 'One featured passage, one short verse to memorize, plus supporting references.',
-    fields: [
-      { key: 'featureRef', label: 'Featured reference', type: 'text' },
-      { key: 'featureText', label: 'Featured verse text', type: 'textarea', rows: 5 },
-      { key: 'memorizeRef', label: 'Memorize — reference', type: 'text' },
-      { key: 'memorizeText', label: 'Memorize — verse text', type: 'textarea', rows: 3 },
-      {
-        key: 'supporting',
-        label: 'Supporting scriptures',
-        type: 'objectList',
-        itemLabel: 'Scripture',
-        fields: [
-          { key: 'ref', label: 'Reference', type: 'text' },
-          { key: 'note', label: 'What it teaches', type: 'text' },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'lessons',
-    label: 'Weekly Lessons',
-    page: 1,
-    hint: 'One card per Sunday. This is the part the girls check most.',
-    fields: [
-      {
-        key: 'weeks',
-        label: 'Sundays this month',
-        type: 'objectList',
-        itemLabel: 'Sunday',
-        fields: [
-          { key: 'date', label: 'Date', type: 'text' },
-          { key: 'label', label: 'Which Sunday', type: 'text' },
-          { key: 'title', label: 'Lesson title', type: 'text' },
-          { key: 'summary', label: 'What we will do', type: 'textarea', rows: 3 },
-          { key: 'scriptures', label: 'Scriptures', type: 'text' },
-          { key: 'taughtBy', label: 'Taught by', type: 'text' },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'leader',
-    label: 'Leader’s Note & Service',
-    page: 1,
-    hint: 'A short note from the presidency and the service focus for the month.',
-    fields: [
-      { key: 'from', label: 'Written by', type: 'text' },
-      { key: 'body', label: 'Note', type: 'textarea', rows: 6 },
-      { key: 'serviceTitle', label: 'Service focus title', type: 'text' },
-      { key: 'serviceBody', label: 'Service focus details', type: 'textarea', rows: 3 },
-    ],
-  },
-  {
-    id: 'highlight',
-    label: 'Member Highlight',
-    page: 2,
-    hint: 'Feature one young woman each month. Get her permission before publishing.',
-    fields: [
-      { key: 'name', label: 'Her name', type: 'text' },
-      { key: 'role', label: 'Class / age', type: 'text' },
-      { key: 'photoUrl', label: 'Photo', type: 'internal' },
-      { key: 'headline', label: 'Headline', type: 'text' },
-      { key: 'quote', label: 'Pull quote', type: 'textarea', rows: 3 },
-      { key: 'body', label: 'Write-up', type: 'textarea', rows: 6 },
-      {
-        key: 'facts',
-        label: 'Quick facts',
-        type: 'objectList',
-        itemLabel: 'Fact',
-        fields: [
-          { key: 'label', label: 'Question', type: 'text' },
-          { key: 'value', label: 'Her answer', type: 'text' },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'activity',
-    label: 'Activity Spotlight',
-    page: 2,
-    hint: 'The main midweek activity for the month.',
-    fields: [
-      { key: 'title', label: 'Activity name', type: 'text' },
-      { key: 'when', label: 'When', type: 'text' },
-      { key: 'where', label: 'Where', type: 'text' },
-      { key: 'purpose', label: 'Why we are doing it', type: 'text' },
-      { key: 'blurb', label: 'Description', type: 'textarea', rows: 5 },
-      { key: 'bring', label: 'What to bring', type: 'list' },
-      { key: 'note', label: 'Safety / parent note', type: 'textarea', rows: 3 },
-    ],
-  },
-  {
     id: 'calendar',
     label: 'Calendar & Birthdays',
-    page: 2,
     hint: 'Everything happening this month, plus birthdays to celebrate.',
     fields: [
       { key: 'view', label: 'Show as', type: 'internal' },
@@ -192,9 +94,61 @@ export const SECTIONS = [
     ],
   },
   {
+    id: 'scriptures',
+    label: 'Monthly Scriptures',
+    hint: 'One featured passage, one short verse to memorize, plus supporting references.',
+    fields: [
+      { key: 'featureRef', label: 'Featured reference', type: 'text' },
+      { key: 'featureText', label: 'Featured verse text', type: 'textarea', rows: 5 },
+      { key: 'memorizeRef', label: 'Memorize — reference', type: 'text' },
+      { key: 'memorizeText', label: 'Memorize — verse text', type: 'textarea', rows: 3 },
+      {
+        key: 'supporting',
+        label: 'Supporting scriptures',
+        type: 'objectList',
+        itemLabel: 'Scripture',
+        fields: [
+          { key: 'ref', label: 'Reference', type: 'text' },
+          { key: 'note', label: 'What it teaches', type: 'text' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'lessons',
+    label: 'Weekly Lessons',
+    hint: 'One card per Sunday. This is the part the girls check most.',
+    fields: [
+      {
+        key: 'weeks',
+        label: 'Sundays this month',
+        type: 'objectList',
+        itemLabel: 'Sunday',
+        fields: [
+          { key: 'date', label: 'Date', type: 'text' },
+          { key: 'label', label: 'Which Sunday', type: 'text' },
+          { key: 'title', label: 'Lesson title', type: 'text' },
+          { key: 'summary', label: 'What we will do', type: 'textarea', rows: 3 },
+          { key: 'scriptures', label: 'Scriptures', type: 'text' },
+          { key: 'taughtBy', label: 'Taught by', type: 'text' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'leader',
+    label: 'Leader’s Note & Service',
+    hint: 'A short note from the presidency and the service focus for the month.',
+    fields: [
+      { key: 'from', label: 'Written by', type: 'text' },
+      { key: 'body', label: 'Note', type: 'textarea', rows: 6 },
+      { key: 'serviceTitle', label: 'Service focus title', type: 'text' },
+      { key: 'serviceBody', label: 'Service focus details', type: 'textarea', rows: 3 },
+    ],
+  },
+  {
     id: 'fun',
     label: 'Fun & Personal Development',
-    page: 2,
     hint: 'The light corner — quote, a question from the girls, and a goal prompt.',
     fields: [
       { key: 'quote', label: 'Quote of the month', type: 'textarea', rows: 3 },
@@ -213,14 +167,12 @@ export const SECTION_IDS = SECTIONS.map((s) => s.id)
 // Blocks that can be switched off for a month. The masthead stays (it is the
 // header), and the two settings sections are not printed at all.
 export const HIDEABLE = [
-  { id: 'theme', label: 'Monthly Theme', page: 1 },
-  { id: 'scriptures', label: 'Monthly Scriptures', page: 1 },
-  { id: 'lessons', label: 'Sundays This Month', page: 1 },
-  { id: 'leader', label: 'A Note For You & Service Focus', page: 1 },
-  { id: 'highlight', label: 'Member Highlight', page: 2 },
-  { id: 'activity', label: 'Activity Spotlight', page: 2 },
-  { id: 'calendar', label: 'Calendar & Birthdays', page: 2 },
-  { id: 'fun', label: 'For You', page: 2 },
+  { id: 'theme', label: 'Monthly Theme' },
+  { id: 'calendar', label: 'Calendar & Birthdays' },
+  { id: 'scriptures', label: 'Monthly Scriptures' },
+  { id: 'lessons', label: 'Sundays This Month' },
+  { id: 'leader', label: 'A Note For You & Service Focus' },
+  { id: 'fun', label: 'For You' },
 ]
 
 export function hiddenSet(issue) {

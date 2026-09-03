@@ -102,7 +102,7 @@
 .page {
   width: 8.5in;
   height: 11in;
-  padding: 0.26in 0.38in 0.15in;
+  padding: 0.24in 0.38in 0.13in;
   background: var(--canvas);
   color: var(--body);
   font-family: var(--sans);
@@ -185,11 +185,11 @@
 
 /* display: Inter 500, negative tracking */
 .masthead-title {
-  font-size: calc(23pt * var(--ts));
+  font-size: calc(20pt * var(--ts));
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.032em;
-  margin: 0.055in 0 0.04in;
+  margin: 0.045in 0 0.035in;
   color: var(--ink);
 }
 
@@ -252,11 +252,11 @@
 .theme .eyebrow { color: rgba(10, 10, 10, 0.58); }
 
 .theme h1 {
-  font-size: calc(21pt * var(--ts));
+  font-size: calc(18pt * var(--ts));
   font-weight: 600;
-  line-height: 1.05;
+  line-height: 1.06;
   letter-spacing: -0.024em;
-  margin: 0.04in 0 0.035in;
+  margin: 0.03in 0 0.03in;
   color: var(--ink);
 }
 
@@ -302,7 +302,7 @@
    siblings, so leaving the heading in there reserves room for the split
    case, which is the one that can overflow. */
 .sheet [data-block="scriptures"] + .scriptures-more > .section-head { display: none; }
-.scriptures-more .scripture-lower { margin-top: 0; }
+.scriptures-more .scripture-list { margin-top: 0; }
 
 /* feature-card-teal */
 .scripture-feature {
@@ -329,11 +329,15 @@
   color: rgba(255, 255, 255, 0.66);
 }
 
-.scripture-lower {
+/* Featured verse and the one to memorise, side by side. The memorize card
+   used to sit beside the reference list, where it was far shorter and left a
+   card of white; against the featured verse the two are a close match. */
+.scripture-top {
   display: grid;
-  grid-template-columns: 1.18fr 1fr;
+  grid-template-columns: 1.5fr 1fr;
   gap: 0.09in;
-  margin-top: 0.07in;
+  margin-top: 0.06in;
+  align-items: stretch;
 }
 
 /* product-mockup-card */
@@ -347,11 +351,13 @@
 }
 .scripture-row {
   display: grid;
-  grid-template-columns: 1.85in 1fr;
-  gap: 0.07in;
+  /* Wide enough for "Doctrine and Covenants 107:18-19" on one line; any
+     narrower and every reference wraps, doubling the height of the list. */
+  grid-template-columns: 2.45in 1fr;
+  gap: 0.09in;
   font-size: calc(9.8pt * var(--ts));
-  line-height: 1.24;
-  padding: 0.016in 0;
+  line-height: 1.22;
+  padding: 0.012in 0;
   border-bottom: 1px solid var(--hairline-soft);
 }
 .scripture-row:first-child { padding-top: 0; }
@@ -726,10 +732,8 @@
 
 .fun { margin-top: 0.09in; flex-shrink: 0; }
 .fun-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.08in 0.13in;
-  align-items: start;
+  column-count: 2;
+  column-gap: 0.14in;
 }
 
 .cal-list {
@@ -744,7 +748,7 @@
   display: grid;
   grid-template-columns: 1.5in 1fr;
   gap: 0.08in;
-  padding: 0.034in 0;
+  padding: 0.024in 0;
   border-bottom: 1px solid var(--hairline-soft);
   font-size: calc(9.8pt * var(--ts));
   line-height: 1.28;
@@ -839,7 +843,10 @@
   color: var(--muted-soft);
 }
 
-.fun-block { margin-bottom: 0; }
+.fun-block {
+  break-inside: avoid;
+  margin-bottom: 0.09in;
+}
 .fun-block:last-child { margin-bottom: 0; }
 
 /* feature-card-pink */
@@ -904,6 +911,13 @@
   display: block;
   height: 0.1in;
   border-bottom: 1px solid var(--hairline);
+}
+
+/* Sections sit 0.09in apart, plus whatever share of the page's leftover
+   height the layout has handed this sheet. The rig never carries the extra,
+   so measuring is unaffected by it. */
+.sheet .page > [data-block] + [data-block] {
+  margin-top: calc(0.09in + var(--gap-extra, 0px));
 }
 
 /* --- print -------------------------------------------------------------- */
@@ -995,13 +1009,12 @@
 
   /* Everything that sits side by side becomes a single column. */
   .theme-questions,
-  .scripture-lower,
+  .scripture-top,
   .lesson-grid,
   .leader,
   .highlight-body,
   .activity-panel,
   .calendar-body,
-  .fun-grid,
   .facts {
     grid-template-columns: 1fr;
     gap: 14px;
@@ -1047,6 +1060,7 @@
     margin-top: 22px;
   }
 
+  .fun-grid { column-count: 1; }
   .leader { padding-top: 0; }
   .page-foot { margin-top: 24px; padding-top: 10px; }
 

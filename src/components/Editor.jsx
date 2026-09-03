@@ -157,7 +157,11 @@ export default function Editor({
 
           {unlocked && !section && (
             <div className="section-list">
-              {SECTIONS.filter((s) => !s.internalSection).map((s) => {
+              {SECTIONS.filter((s) => !s.internalSection).map((s, i, all) => {
+                // Which sheet a section prints on depends on how much has
+                // been written, so the chip shows its place in the order
+                // rather than a page number that might not hold.
+                const order = all.slice(0, i + 1).filter((x) => x.page !== 0).length
                 const entry = meta?.[s.id]
                 const canHide = HIDEABLE.some((h) => h.id === s.id)
                 const isHidden = hiddenIds.has(s.id)
@@ -169,9 +173,9 @@ export default function Editor({
                     }`}
                   >
                     <button className="section-btn" onClick={() => openSection(s.id)}>
-                      {/* Page 0 is not a page — these two set up the issue
-                          rather than printing on it, so they read "Setup". */}
-                      <span className="page-chip">{s.page === 0 ? 'Setup' : `P${s.page}`}</span>
+                      {/* Page 0 is not a page — these set up the issue rather
+                          than printing on it, so they read "Setup". */}
+                      <span className="page-chip">{s.page === 0 ? 'Setup' : order}</span>
                       <span>
                         <span className="section-name">{s.label}</span>
                         <span className="section-meta">

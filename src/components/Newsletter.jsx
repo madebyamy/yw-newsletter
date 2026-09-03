@@ -296,17 +296,12 @@ export function buildBlocks({ issue, meta, monthKey, leaderMode, viewOverride, o
   const t = issue.theme
   const s = issue.scriptures
   const ld = issue.leader
-  const h = issue.highlight
-  const a = issue.activity
   const cal = issue.calendar
   const fun = issue.fun
 
   const weeks = nonEmpty(issue.lessons?.weeks)
   const questions = nonEmpty(t?.questions)
   const supporting = nonEmpty(s?.supporting)
-  const facts = nonEmpty(h?.facts).filter((f) => f.label || f.value)
-  const bring = nonEmpty(a?.bring)
-  const monogram = (h?.name || '').trim().charAt(0).toUpperCase()
   const hidden = hiddenSet(issue)
 
   // One list for the month, read in date order regardless of the order it was
@@ -352,63 +347,11 @@ export function buildBlocks({ issue, meta, monthKey, leaderMode, viewOverride, o
     )
   }
 
-  // The featured verse and the two supporting panels are packed separately.
-  // Together they are half a sheet, which would strand whatever came before.
-  if (!hidden.has('scriptures')) {
-    if (s?.featureText) {
-      add(
-        'scriptures',
-        <section className="scriptures" data-block="scriptures">
-          <SectionHead title="Monthly Scriptures" meta={meta} id="scriptures" />
-          <div className="scripture-feature">
-            <div className="ornament">✦</div>
-            <blockquote>“{s.featureText}”</blockquote>
-            <cite>
-              <Ref>{s.featureRef}</Ref>
-            </cite>
-          </div>
-        </section>,
-      )
-    }
-
-    if (supporting.length > 0 || s?.memorizeText) {
-      add(
-        'scriptures-more',
-        <section className="scriptures scriptures-more" data-block="scriptures-more">
-          {/* Hidden by CSS when this lands directly under the first half; it's
-              only needed when a page break has separated the two. */}
-          <SectionHead title="Monthly Scriptures" meta={meta} id="scriptures" />
-          <div className="scripture-lower">
-            <div className="scripture-list">
-              {supporting.map((row, i) => (
-                <div key={i} className="scripture-row">
-                  <span className="ref">
-                    <Ref>{row.ref}</Ref>
-                  </span>
-                  <span className="note">{row.note}</span>
-                </div>
-              ))}
-            </div>
-
-            {s?.memorizeText && (
-              <aside className="memorize">
-                <div className="eyebrow">Memorize This Month</div>
-                <blockquote>“{s.memorizeText}”</blockquote>
-                <cite>
-                  <Ref>{s.memorizeRef}</Ref>
-                </cite>
-              </aside>
-            )}
-          </div>
-        </section>,
-      )
-    }
-  }
-
-  // Page one, where the girls look first — which is why it comes before the
-  // Sundays rather than after them. The list and the birthdays run side by
-  // side: a dated row is one line however wide the column is, so a full width
-  // list would only waste the right-hand half.
+  // Second on the sheet, right under the theme. High enough that page one
+  // keeps the dates even when a month runs long: whatever has to move onto
+  // the next sheet, it will be something below this. The list and the
+  // birthdays run side by side — a dated row is one line however wide the
+  // column is, so a full width list would only waste the right-hand half.
   if (calendarShown) {
     add(
       'calendar',
@@ -458,6 +401,64 @@ export function buildBlocks({ issue, meta, monthKey, leaderMode, viewOverride, o
     )
   }
 
+  // The verse to memorise sits beside the featured one rather than under it,
+  // where it used to leave most of a card's worth of white. That puts the
+  // supporting references on their own, full width, one line each — and being
+  // a smaller piece, it is one the layout can move between sheets without
+  // stranding half a page behind it.
+  if (!hidden.has('scriptures')) {
+    if (s?.featureText || s?.memorizeText) {
+      add(
+        'scriptures',
+        <section className="scriptures" data-block="scriptures">
+          <SectionHead title="Monthly Scriptures" meta={meta} id="scriptures" />
+          <div className="scripture-top">
+            {s?.featureText && (
+              <div className="scripture-feature">
+                <div className="ornament">✦</div>
+                <blockquote>“{s.featureText}”</blockquote>
+                <cite>
+                  <Ref>{s.featureRef}</Ref>
+                </cite>
+              </div>
+            )}
+
+            {s?.memorizeText && (
+              <aside className="memorize">
+                <div className="eyebrow">Memorize This Month</div>
+                <blockquote>“{s.memorizeText}”</blockquote>
+                <cite>
+                  <Ref>{s.memorizeRef}</Ref>
+                </cite>
+              </aside>
+            )}
+          </div>
+        </section>,
+      )
+    }
+
+    if (supporting.length > 0) {
+      add(
+        'scriptures-more',
+        <section className="scriptures scriptures-more" data-block="scriptures-more">
+          {/* Hidden by CSS when this lands directly under the first half; it's
+              only needed when a page break has separated the two. */}
+          <SectionHead title="Monthly Scriptures" meta={meta} id="scriptures" />
+          <div className="scripture-list">
+            {supporting.map((row, i) => (
+              <div key={i} className="scripture-row">
+                <span className="ref">
+                  <Ref>{row.ref}</Ref>
+                </span>
+                <span className="note">{row.note}</span>
+              </div>
+            ))}
+          </div>
+        </section>,
+      )
+    }
+  }
+
   if (!hidden.has('lessons')) {
     add(
       'lessons',
@@ -504,80 +505,6 @@ export function buildBlocks({ issue, meta, monthKey, leaderMode, viewOverride, o
             <p>{ld.serviceBody}</p>
           </aside>
         )}
-      </section>,
-    )
-  }
-
-  if (!hidden.has('highlight')) {
-    add(
-      'highlight',
-      <section className="highlight" data-block="highlight">
-        <SectionHead title="Member Highlight" meta={meta} id="highlight" />
-        <div className="highlight-body">
-          {h?.photoUrl ? (
-            <img className="portrait" src={h.photoUrl} alt={h.name || 'Member highlight'} />
-          ) : (
-            <div className="portrait-fallback" aria-hidden="true">
-              {monogram || '✦'}
-            </div>
-          )}
-
-          <div>
-            <h3>{h?.name}</h3>
-            {h?.role && <div className="highlight-role">{h.role}</div>}
-            {h?.headline && <div className="highlight-headline">{h.headline}</div>}
-            {h?.quote && <blockquote className="highlight-quote">“{h.quote}”</blockquote>}
-            <div className="highlight-text">
-              <Paragraphs text={h?.body} />
-            </div>
-
-            {facts.length > 0 && (
-              <div className="facts">
-                {facts.map((f, i) => (
-                  <div key={i} className="fact">
-                    <span className="fact-label">{f.label}</span>
-                    {f.value ? <span className="fact-value">{f.value}</span> : <span className="fact-blank" />}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </section>,
-    )
-  }
-
-  if (!hidden.has('activity')) {
-    add(
-      'activity',
-      <section className="activity" data-block="activity">
-        <SectionHead title="Activity Spotlight" meta={meta} id="activity" />
-        <div className="activity-panel">
-          <div>
-            <h3>{a?.title}</h3>
-            <div className="activity-meta">
-              {a?.when && <span>{a.when}</span>}
-              {a?.where && <span>{a.where}</span>}
-            </div>
-            {a?.purpose && <div className="activity-purpose">{a.purpose}</div>}
-            <div className="activity-blurb">
-              <Paragraphs text={a?.blurb} />
-            </div>
-          </div>
-
-          {bring.length > 0 && (
-            <div className="bring">
-              <div className="eyebrow">Bring With You</div>
-              <ul>
-                {bring.map((item, i) => (
-                  <li key={i}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {a?.note && <div className="activity-note">{a.note}</div>}
-        </div>
       </section>,
     )
   }
@@ -640,11 +567,30 @@ export function buildBlocks({ issue, meta, monthKey, leaderMode, viewOverride, o
 const PAGE_H = 11 * 96
 // A little air above the footer so the last line never sits on its rule.
 const FOOT_GAP = 8
+// How far a gap between sections may open up to take in a page's leftover
+// height. Past this a page reads as stretched rather than composed.
+const MAX_EXTRA_GAP = 48
 
 const sameLayout = (a, b) =>
-  Array.isArray(a) &&
-  a.length === b.length &&
-  a.every((page, i) => page.length === b[i].length && page.every((v, j) => v === b[i][j]))
+  a &&
+  a.pages.length === b.pages.length &&
+  a.pages.every((page, i) => page.length === b.pages[i].length && page.every((v, j) => v === b.pages[i][j])) &&
+  a.gaps.every((g, i) => g === b.gaps[i])
+
+// A page that stops well short of its footer looks unfinished. The height it
+// has left over is shared out between the sections on it instead, so they sit
+// down the page on purpose rather than piling up at the top. One share is
+// held back for the foot of the page, and the whole thing is capped, so a
+// nearly empty page does not end up with canyons in it.
+function spreadSlack(pages, heights, firstCap, restCap) {
+  return pages.map((indexes, pageNo) => {
+    if (indexes.length < 2) return 0
+    const used = indexes.reduce((sum, i) => sum + heights[i], 0)
+    const slack = (pageNo === 0 ? firstCap : restCap) - used - 2
+    if (slack <= 0) return 0
+    return Math.floor(Math.min(MAX_EXTRA_GAP, slack / indexes.length))
+  })
+}
 
 // Fewest sheets first: fill each one until the next block would cross 11in.
 // This is optimal for the page count, because the sections have to stay in
@@ -762,8 +708,9 @@ function usePagination({ rigRef, isPhone, deps }) {
       const count = fewestPages(heights, firstCap, restCap)
       const pages = balance(heights, count, firstCap, restCap)
       if (!pages) return
+      const next = { pages, gaps: spreadSlack(pages, heights, firstCap, restCap) }
 
-      setLayout((prevLayout) => (sameLayout(prevLayout, pages) ? prevLayout : pages))
+      setLayout((prevLayout) => (sameLayout(prevLayout, next) ? prevLayout : next))
     }
 
     measure()
@@ -805,7 +752,8 @@ export function Sheets({
 
   // Before the first measurement, and on a phone where the sheet reflows into
   // one continuous column, everything sits on a single page.
-  const pages = layout && layout.length > 0 ? layout : [blocks.map((_, i) => i)]
+  const pages = layout && layout.pages.length > 0 ? layout.pages : [blocks.map((_, i) => i)]
+  const gaps = layout ? layout.gaps : []
   const total = pages.length
 
   // A single block can still be taller than a sheet on its own. Moving it does
@@ -842,7 +790,10 @@ export function Sheets({
           <div key={pi} className="sheet">
             <div className="page-frame" style={frameStyle}>
               <div className="page-scale" style={pageStyle}>
-                <div className={sheet.className} style={sheet.style}>
+                <div
+                  className={sheet.className}
+                  style={{ ...sheet.style, "--gap-extra": String(gaps[pi] || 0) + "px" }}
+                >
                   <Background image={sheet.image} />
                   {pi === 0 ? <Masthead m={m} /> : <RunHead m={m} />}
                   {indexes.map(place)}

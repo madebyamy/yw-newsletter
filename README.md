@@ -17,7 +17,7 @@ September 2026 is filled in from the Church's youth curriculum outline —
 - **One link to share.** Anyone with the link reads the current issue. No
   account, no login.
 - **Several editors.** Press *Edit sections*, enter the shared passcode, and
-  edit any of nine sections. Each section saves on its own, so two people
+  edit any of seven sections. Each section saves on its own, so two people
   working at the same time never overwrite each other.
 - **Who wrote what.** Every section shows the name of whoever last changed it,
   right on the printed page.
@@ -29,7 +29,7 @@ September 2026 is filled in from the Church's youth curriculum outline —
 - **Month by month.** The arrows step to any month. Each month is its own
   issue; past months stay readable at their own link.
 
-## The nine sections
+## The seven sections
 
 | Section | Who usually owns it |
 |---|---|
@@ -39,8 +39,6 @@ September 2026 is filled in from the Church's youth curriculum outline —
 | Calendar & Birthdays | dates and birthdays |
 | Weekly Lessons | one card per Sunday |
 | Leader's Note & Service | the presidency |
-| Member Highlight | one young woman each month |
-| Activity Spotlight | the midweek activity |
 | Fun & Personal Development | quote, a question from the girls, a challenge |
 
 They always run in that order. The calendar sits high on purpose, so the dates
@@ -62,19 +60,23 @@ file next to `src/data/september2026.js` and register it in the `SEEDS` map in
 
 ## Type size and page count
 
-Body text is 10pt, with headings stepped up from there and set bold.
+Body text is 10pt, with headings stepped up from there and set bold. Two pages
+at that size is what the seven sections were cut and arranged to hit: a filled
+September lands on two, and it takes about sixteen dated entries — twice a
+normal month — before it needs a third.
 
-Two pages and readable type do not both fit. All nine sections at 10pt come to
-about three sheets; squeezing them onto two needs roughly a quarter less on the
-page, which is content, not spacing. The original two-page issue only fitted
-because it was set at 7.8pt.
+Nothing breaks if it does. The sections are measured and dealt onto as many
+sheets as they need, so a long month simply gets another one rather than
+losing the bottom of a page.
 
-So the page count follows the writing. September, filled in, comes to three
-pages. Turning two of the longer blocks off — the Activity Spotlight and For
-You, say — brings it down to two. Because sections are never split down the
-middle, a page sometimes ends early rather than breaking a card across the
-fold; the sections are spread evenly across whatever sheets they need, so no
-page is left holding one lonely block.
+Two things keep it at two. The calendar sits second, high enough that whatever
+has to move is something below it, so page one keeps the dates. And the
+supporting references are their own small block, which is what actually moves
+when a month runs long — a big block there would strand half a page behind it.
+
+Each page then shares out whatever height it has left between the sections on
+it, so they sit down the sheet on purpose instead of piling up at the top with
+a gap underneath.
 
 One section written longer than a whole sheet is the only thing that still
 cannot be placed. If that happens an orange warning appears under the page
@@ -189,8 +191,8 @@ Each block in **Edit sections** has an eye beside it. Click it to leave that
 block out of the month you are editing; click again to bring it back. It saves
 straight away, and the row greys out so you can see at a glance what is off.
 
-Hiding the Activity Spotlight in September leaves October's alone — the list is
-stored with that month's issue. Nothing is deleted: whatever was written stays
+Hiding the theme in September leaves October’s alone — the list is stored
+with that month’s issue. Nothing is deleted: whatever was written stays
 saved and reappears the moment you switch the eye back on.
 
 The masthead, background and publish rows have no eye, since they are either
@@ -248,7 +250,16 @@ Two things are worth knowing if it prints heavier than you want:
   browser's local storage and says so in the toolbar. Nothing is lost; it just
   is not shared until the backend is connected.
 
-## A note on the member highlight
+## A note on naming the girls
 
-Everyone featured is a minor. Get the young woman's permission and her parents'
-before publishing her name, photo, or story on a public link.
+Everyone named is a minor, and the reader link is public. Get a young woman's
+permission and her parents' before her name goes on it — the birthday list
+included.
+
+## The member highlight and activity spotlight
+
+Both were taken out to make two pages work. Nothing written in them was
+deleted: saves merge into the stored month rather than replacing it, so the
+text is still in the row, and both sections come back by putting them into
+`SECTIONS` in `src/data/schema.js` and into `buildBlocks` in
+`src/components/Newsletter.jsx`. Expect a third sheet if they do.
