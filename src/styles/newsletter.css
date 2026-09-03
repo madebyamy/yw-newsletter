@@ -945,7 +945,10 @@
     box-shadow: none !important;
   }
   .page {
-    position: static !important;
+    /* Stays positioned: the background layer is absolute within it, so a
+       static page would let every sheet's pattern escape to the top of the
+       document and only the first one would print. */
+    position: relative !important;
     transform: none !important;
     box-shadow: none !important;
     margin: 0 !important;

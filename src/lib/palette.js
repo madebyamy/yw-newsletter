@@ -184,8 +184,10 @@ export function derivePalette(picked, lightest) {
 // Maps a palette onto the CSS custom properties the page reads.
 export function paletteToStyle(palette, opacity) {
   if (!palette) return {}
-  const [t1, t2, t3, t4] = palette.tints
-  const [p1, p2, p3, p4] = palette.pills
+  // A row saved by an older version, or edited by hand, may not carry these.
+  // Falling back beats destructuring undefined and blanking the whole page.
+  const [t1, t2, t3, t4] = palette.tints || []
+  const [p1, p2, p3, p4] = palette.pills || []
   return {
     '--canvas': palette.canvas,
     '--surface-card': palette.surfaceCard,

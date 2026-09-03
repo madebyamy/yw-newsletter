@@ -699,7 +699,11 @@ function usePagination({ rigRef, isPhone, deps }) {
         prev = bottom
         return h
       })
-      if (heights.length === 0) return
+      // Print hides the measuring copy, and a hidden element measures zero.
+      // Believing that would collapse the whole issue onto one page at exactly
+      // the moment it is being sent to the printer, so keep the last good
+      // layout instead.
+      if (heights.length === 0 || heights.every((h) => h <= 0)) return
 
       const firstCap = PAGE_H - padTop - padBottom - headH - footH
       const restCap = PAGE_H - padTop - padBottom - runH - footH
