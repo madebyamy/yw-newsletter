@@ -405,6 +405,59 @@ export function buildBlocks({ issue, meta, monthKey, leaderMode, viewOverride, o
     }
   }
 
+  // Page one, where the girls look first — which is why it comes before the
+  // Sundays rather than after them. The list and the birthdays run side by
+  // side: a dated row is one line however wide the column is, so a full width
+  // list would only waste the right-hand half.
+  if (calendarShown) {
+    add(
+      'calendar',
+      <section className="calendar-block" data-block="calendar">
+        <div className="section-head">
+          <h2>Calendar &amp; Birthdays</h2>
+          {/* Readers switch the view for themselves. The button never
+              prints; the view they chose does. */}
+          <button
+            type="button"
+            className="view-swap no-print"
+            onClick={onToggleCalendarView}
+            title={calendarView === 'calendar' ? 'Show as a list' : 'Show as a calendar'}
+          >
+            {calendarView === 'calendar' ? 'List' : 'Calendar'}
+          </button>
+          <Credit meta={meta} id="calendar" />
+        </div>
+
+        <div className="calendar-body">
+          <div>
+            {calendarView === 'calendar' ? (
+              <>
+                <MonthCalendar monthKey={monthKey} entries={entries} />
+                {activityEntries.length > 0 && (
+                  <div className="cal-names">
+                    {activityEntries.map((e, i) => (
+                      <EventRow key={i} event={e} />
+                    ))}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="cal-list">
+                {entries.length > 0 ? (
+                  entries.map((e, i) => <EventRow key={i} event={e} />)
+                ) : (
+                  leaderMode && <p className="empty-hint no-print">Add this month’s dates in the editor.</p>
+                )}
+              </div>
+            )}
+          </div>
+
+          <Birthdays birthdays={birthdays} leaderMode={leaderMode} />
+        </div>
+      </section>,
+    )
+  }
+
   if (!hidden.has('lessons')) {
     add(
       'lessons',
@@ -529,97 +582,55 @@ export function buildBlocks({ issue, meta, monthKey, leaderMode, viewOverride, o
     )
   }
 
-  if (calendarShown || !hidden.has('fun')) {
-    const single = !calendarShown || hidden.has('fun')
+  // The four cards used to stack in a narrow column, which made this the
+  // tallest thing in the issue. Across the full width in two columns it is
+  // about half the height for the same words.
+  if (!hidden.has('fun')) {
     add(
-      'columns',
-      <section className={single ? 'columns columns-single' : 'columns'} data-block="columns">
-        {calendarShown && (
-          <div>
-            <div className="section-head">
-              <h2>Calendar</h2>
-              {/* Readers switch the view for themselves. The button never
-                  prints; the view they chose does. */}
-              <button
-                type="button"
-                className="view-swap no-print"
-                onClick={onToggleCalendarView}
-                title={calendarView === 'calendar' ? 'Show as a list' : 'Show as a calendar'}
-              >
-                {calendarView === 'calendar' ? 'List' : 'Calendar'}
-              </button>
-              <Credit meta={meta} id="calendar" />
+      'fun',
+      <section className="fun" data-block="fun">
+        <SectionHead title="For You" meta={meta} id="fun" />
+        <div className="fun-grid">
+          {fun?.quote && (
+            <div className="fun-block quote-card">
+              <div className="eyebrow">Quote of the Month</div>
+              <blockquote>“{fun.quote}”</blockquote>
+              <cite>{fun.quoteBy}</cite>
             </div>
+          )}
 
-            {calendarView === 'calendar' ? (
-              <>
-                <MonthCalendar monthKey={monthKey} entries={entries} />
-                {activityEntries.length > 0 && (
-                  <div className="cal-names">
-                    {activityEntries.map((e, i) => (
-                      <EventRow key={i} event={e} />
-                    ))}
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className="cal-list">
-                {entries.length > 0 ? (
-                  entries.map((e, i) => <EventRow key={i} event={e} />)
-                ) : (
-                  leaderMode && <p className="empty-hint no-print">Add this month’s dates in the editor.</p>
-                )}
+          {fun?.question && (
+            <div className="fun-block">
+              <div className="eyebrow">You Asked</div>
+              <div className="qa-q">{fun.question}</div>
+              <div className="qa-a">
+                <Paragraphs text={fun.answer} />
               </div>
-            )}
+            </div>
+          )}
 
-            <Birthdays birthdays={birthdays} leaderMode={leaderMode} />
-          </div>
-        )}
+          {fun?.challenge && (
+            <div className="fun-block challenge">
+              <div className="eyebrow">Challenge</div>
+              <p>{fun.challenge}</p>
+            </div>
+          )}
 
-        {!hidden.has('fun') && (
-          <div>
-            <SectionHead title="For You" meta={meta} id="fun" />
-
-            {fun?.quote && (
-              <div className="fun-block quote-card">
-                <div className="eyebrow">Quote of the Month</div>
-                <blockquote>“{fun.quote}”</blockquote>
-                <cite>{fun.quoteBy}</cite>
+          {fun?.progressPrompt && (
+            <div className="fun-block">
+              <div className="eyebrow">My Goal This Month</div>
+              <div className="progress-prompt">{fun.progressPrompt}</div>
+              <div className="progress-lines">
+                <span />
+                <span />
               </div>
-            )}
-
-            {fun?.question && (
-              <div className="fun-block">
-                <div className="eyebrow">You Asked</div>
-                <div className="qa-q">{fun.question}</div>
-                <div className="qa-a">
-                  <Paragraphs text={fun.answer} />
-                </div>
-              </div>
-            )}
-
-            {fun?.challenge && (
-              <div className="fun-block challenge">
-                <div className="eyebrow">Challenge</div>
-                <p>{fun.challenge}</p>
-              </div>
-            )}
-
-            {fun?.progressPrompt && (
-              <div className="fun-block">
-                <div className="eyebrow">My Goal This Month</div>
-                <div className="progress-prompt">{fun.progressPrompt}</div>
-                <div className="progress-lines">
-                  <span />
-                  <span />
-                </div>
-              </div>
-            )}
-          </div>
-        )}
+            </div>
+          )}
+        </div>
       </section>,
     )
   }
+
 
   return out
 }
@@ -628,12 +639,78 @@ export function buildBlocks({ issue, meta, monthKey, leaderMode, viewOverride, o
 
 const PAGE_H = 11 * 96
 // A little air above the footer so the last line never sits on its rule.
-const FOOT_GAP = 12
+const FOOT_GAP = 8
 
 const sameLayout = (a, b) =>
   Array.isArray(a) &&
   a.length === b.length &&
   a.every((page, i) => page.length === b[i].length && page.every((v, j) => v === b[i][j]))
+
+// Fewest sheets first: fill each one until the next block would cross 11in.
+// This is optimal for the page count, because the sections have to stay in
+// reading order.
+function fewestPages(heights, firstCap, restCap) {
+  let count = 1
+  let used = 0
+  let cap = firstCap
+  for (const h of heights) {
+    if (used > 0 && used + h > cap) {
+      count += 1
+      used = 0
+      cap = restCap
+    }
+    used += h
+  }
+  return count
+}
+
+// Then spread the blocks across that many sheets as evenly as they will go,
+// which is what stops the last page holding one lonely section while the one
+// before it is packed to the fold. Same number of sheets either way — only
+// the distribution changes.
+function balance(heights, pageCount, firstCap, restCap) {
+  const n = heights.length
+  const capOf = (page) => (page === 0 ? firstCap : restCap)
+  const sums = [0]
+  for (let i = 0; i < n; i++) sums.push(sums[i] + heights[i])
+  const span = (a, b) => sums[b] - sums[a]
+
+  const INF = Infinity
+  // best[k][i]: the smallest possible tallest page, packing blocks i..n-1
+  // into k pages. cut[k][i] remembers where that page ended.
+  const best = Array.from({ length: pageCount + 1 }, () => new Array(n + 1).fill(INF))
+  const cut = Array.from({ length: pageCount + 1 }, () => new Array(n + 1).fill(-1))
+  for (let k = 0; k <= pageCount; k++) best[k][n] = k === 0 ? 0 : INF
+  best[0][n] = 0
+
+  for (let k = 1; k <= pageCount; k++) {
+    const page = pageCount - k // which sheet this is, counting from the front
+    for (let i = n - 1; i >= 0; i--) {
+      for (let j = i + 1; j <= n; j++) {
+        const height = span(i, j)
+        if (height > capOf(page) && j > i + 1) break // no room for more here
+        const rest = best[k - 1][j]
+        if (rest === INF) continue
+        const worst = Math.max(height, rest)
+        if (worst < best[k][i]) {
+          best[k][i] = worst
+          cut[k][i] = j
+        }
+      }
+    }
+  }
+
+  if (best[pageCount][0] === INF) return null
+  const pages = []
+  let i = 0
+  for (let k = pageCount; k > 0; k--) {
+    const j = cut[k][i]
+    if (j < 0) return null
+    pages.push(Array.from({ length: j - i }, (_, t) => i + t))
+    i = j
+  }
+  return pages
+}
 
 // Packs the blocks onto as many sheets as they need. Everything is measured
 // once in an offscreen copy laid out at the real 8.5in width, then filled in
@@ -681,23 +758,10 @@ function usePagination({ rigRef, isPhone, deps }) {
       const firstCap = PAGE_H - padTop - padBottom - headH - footH
       const restCap = PAGE_H - padTop - padBottom - runH - footH
 
-      const pages = []
-      let current = []
-      let used = 0
-      let cap = firstCap
-      heights.forEach((h, i) => {
-        // A block taller than a whole sheet is no better off on the next one,
-        // so it stays put and the overflow warning picks it up.
-        if (current.length > 0 && used + h > cap) {
-          pages.push(current)
-          current = []
-          used = 0
-          cap = restCap
-        }
-        current.push(i)
-        used += h
-      })
-      pages.push(current)
+      // Fewest sheets first, then spread the sections evenly across them.
+      const count = fewestPages(heights, firstCap, restCap)
+      const pages = balance(heights, count, firstCap, restCap)
+      if (!pages) return
 
       setLayout((prevLayout) => (sameLayout(prevLayout, pages) ? prevLayout : pages))
     }

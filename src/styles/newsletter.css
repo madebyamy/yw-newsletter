@@ -102,11 +102,11 @@
 .page {
   width: 8.5in;
   height: 11in;
-  padding: 0.36in 0.5in 0.24in;
+  padding: 0.26in 0.38in 0.15in;
   background: var(--canvas);
   color: var(--body);
   font-family: var(--sans);
-  font-size: calc(12pt * var(--ts));
+  font-size: calc(10pt * var(--ts));
   font-weight: 400;
   line-height: 1.38;
   display: flex;
@@ -125,7 +125,7 @@
 
 /* caption-uppercase */
 .eyebrow {
-  font-size: calc(9pt * var(--ts));
+  font-size: calc(7.8pt * var(--ts));
   font-weight: 700;
   letter-spacing: 0.13em;
   text-transform: uppercase;
@@ -136,11 +136,11 @@
   display: flex;
   align-items: baseline;
   gap: 0.09in;
-  margin-bottom: 0.07in;
+  margin-bottom: 0.055in;
 }
 .section-head h2 {
   margin: 0;
-  font-size: calc(12pt * var(--ts));
+  font-size: calc(10pt * var(--ts));
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -149,7 +149,7 @@
 }
 .section-head .credit {
   margin-left: auto;
-  font-size: calc(8.8pt * var(--ts));
+  font-size: calc(7.5pt * var(--ts));
   font-weight: 500;
   color: var(--muted-soft);
   white-space: nowrap;
@@ -160,7 +160,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(7.5pt * var(--ts));
+  font-size: calc(6.5pt * var(--ts));
   line-height: 1;
   letter-spacing: 0.4em;
   color: rgba(255, 255, 255, 0.4);
@@ -176,7 +176,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: calc(9pt * var(--ts));
+  font-size: calc(7.8pt * var(--ts));
   font-weight: 600;
   letter-spacing: 0.13em;
   text-transform: uppercase;
@@ -185,11 +185,11 @@
 
 /* display: Inter 500, negative tracking */
 .masthead-title {
-  font-size: calc(34pt * var(--ts));
+  font-size: calc(23pt * var(--ts));
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.032em;
-  margin: 0.08in 0 0.045in;
+  margin: 0.055in 0 0.04in;
   color: var(--ink);
 }
 
@@ -198,25 +198,25 @@
   display: inline-flex;
   align-items: center;
   gap: 0.06in;
-  font-size: calc(9.5pt * var(--ts));
+  font-size: calc(8.2pt * var(--ts));
   font-weight: 700;
   letter-spacing: 0.11em;
   text-transform: uppercase;
   color: var(--ink);
   background: var(--surface-card);
   border-radius: var(--r-pill);
-  padding: 0.032in 0.105in;
+  padding: 0.026in 0.09in;
 }
 .masthead-sub .dot { color: var(--muted-soft); letter-spacing: 0; }
 
 .masthead-tagline {
-  font-size: calc(12pt * var(--ts));
+  font-size: calc(10pt * var(--ts));
   color: var(--muted);
-  margin-top: 0.045in;
+  margin-top: 0.035in;
 }
 
 .masthead-rule {
-  margin-top: 0.08in;
+  margin-top: 0.06in;
   height: 1px;
   background: var(--hairline);
 }
@@ -228,7 +228,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: calc(9pt * var(--ts));
+  font-size: calc(7.8pt * var(--ts));
   font-weight: 600;
   letter-spacing: 0.13em;
   text-transform: uppercase;
@@ -242,8 +242,8 @@
 /* --- theme hero — feature-card-peach ------------------------------------ */
 
 .theme {
-  margin-top: 0.12in;
-  padding: 0.12in 0.16in;
+  margin-top: 0.09in;
+  padding: 0.1in 0.14in;
   background: var(--tint-1);
   border-radius: var(--r-xl);
   color: var(--ink);
@@ -252,7 +252,7 @@
 .theme .eyebrow { color: rgba(10, 10, 10, 0.58); }
 
 .theme h1 {
-  font-size: calc(26pt * var(--ts));
+  font-size: calc(21pt * var(--ts));
   font-weight: 600;
   line-height: 1.05;
   letter-spacing: -0.024em;
@@ -261,15 +261,15 @@
 }
 
 .theme-source {
-  font-size: calc(10.5pt * var(--ts));
+  font-size: calc(8.8pt * var(--ts));
   font-weight: 500;
   color: rgba(10, 10, 10, 0.6);
   margin-bottom: 0.065in;
 }
 
 .theme-intro {
-  font-size: calc(12pt * var(--ts));
-  line-height: 1.32;
+  font-size: calc(10pt * var(--ts));
+  line-height: 1.28;
   color: rgba(10, 10, 10, 0.82);
   max-width: 6.5in;
 }
@@ -277,23 +277,23 @@
 .theme-questions {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.08in;
-  margin-top: 0.075in;
+  gap: 0.07in;
+  margin-top: 0.06in;
 }
 .theme-question {
-  font-size: calc(12pt * var(--ts));
+  font-size: calc(10pt * var(--ts));
   font-weight: 500;
-  line-height: 1.32;
+  line-height: 1.26;
   color: var(--ink);
   background: rgba(255, 250, 240, 0.62);
   border-radius: var(--r-md);
-  padding: 0.045in 0.06in;
+  padding: 0.032in 0.05in;
 }
 .theme-question::before { content: none; }
 
 /* --- scripture band ----------------------------------------------------- */
 
-.scriptures { margin-top: 0.12in; flex-shrink: 0; }
+.scriptures { margin-top: 0.09in; flex-shrink: 0; }
 .scriptures-more { margin-top: 0.09in; }
 /* When both halves share a page they read as one section, so the second
    heading is dropped; once a page break separates them the selector stops
@@ -307,14 +307,14 @@
 /* feature-card-teal */
 .scripture-feature {
   text-align: center;
-  padding: 0.1in 0.34in 0.09in;
+  padding: 0.08in 0.26in 0.07in;
   background: var(--feature-bg);
   border-radius: var(--r-xl);
   color: var(--feature-fg);
 }
 .scripture-feature blockquote {
-  margin: 0.045in 0 0.055in;
-  font-size: calc(15pt * var(--ts));
+  margin: 0.035in 0 0.045in;
+  font-size: calc(10.5pt * var(--ts));
   font-weight: 500;
   line-height: 1.3;
   letter-spacing: -0.012em;
@@ -322,7 +322,7 @@
 }
 .scripture-feature cite {
   font-style: normal;
-  font-size: calc(9pt * var(--ts));
+  font-size: calc(7.8pt * var(--ts));
   font-weight: 600;
   letter-spacing: 0.13em;
   text-transform: uppercase;
@@ -332,8 +332,8 @@
 .scripture-lower {
   display: grid;
   grid-template-columns: 1.18fr 1fr;
-  gap: 0.1in;
-  margin-top: 0.085in;
+  gap: 0.09in;
+  margin-top: 0.07in;
 }
 
 /* product-mockup-card */
@@ -343,15 +343,15 @@
   background: var(--canvas);
   border: 1px solid var(--hairline);
   border-radius: var(--r-lg);
-  padding: 0.07in 0.11in;
+  padding: 0.06in 0.09in;
 }
 .scripture-row {
   display: grid;
-  grid-template-columns: 2.15in 1fr;
+  grid-template-columns: 1.85in 1fr;
   gap: 0.07in;
-  font-size: calc(11.5pt * var(--ts));
-  line-height: 1.26;
-  padding: 0.024in 0;
+  font-size: calc(9.8pt * var(--ts));
+  line-height: 1.24;
+  padding: 0.016in 0;
   border-bottom: 1px solid var(--hairline-soft);
 }
 .scripture-row:first-child { padding-top: 0; }
@@ -364,23 +364,23 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 0.11in 0.13in;
+  padding: 0.09in 0.11in;
   background: var(--tint-3);
   border-radius: var(--r-lg);
   color: var(--ink);
 }
 .memorize .eyebrow { color: rgba(10, 10, 10, 0.6); }
 .memorize blockquote {
-  margin: 0.045in 0;
-  font-size: calc(14pt * var(--ts));
+  margin: 0.035in 0;
+  font-size: calc(12pt * var(--ts));
   font-weight: 500;
-  line-height: 1.28;
+  line-height: 1.24;
   letter-spacing: -0.012em;
   color: var(--ink);
 }
 .memorize cite {
   font-style: normal;
-  font-size: calc(8.8pt * var(--ts));
+  font-size: calc(7.5pt * var(--ts));
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -389,19 +389,19 @@
 
 /* --- weekly lessons — outline cards, cycling pills ----------------------- */
 
-.lessons { margin-top: 0.12in; flex-shrink: 0; }
+.lessons { margin-top: 0.09in; flex-shrink: 0; }
 
 .lesson-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.1in;
+  gap: 0.08in;
 }
 
 .lesson {
   background: var(--canvas);
   border: 1px solid var(--hairline);
   border-radius: var(--r-lg);
-  padding: 0.09in 0.12in 0.09in;
+  padding: 0.08in 0.1in 0.08in;
   display: flex;
   flex-direction: column;
 }
@@ -414,7 +414,7 @@
   margin-bottom: 0.05in;
 }
 .lesson-date {
-  font-size: calc(9pt * var(--ts));
+  font-size: calc(7.8pt * var(--ts));
   font-weight: 700;
   letter-spacing: 0.11em;
   text-transform: uppercase;
@@ -423,7 +423,7 @@
 
 /* badge-pill, cycling so no two adjacent cards share a colour */
 .lesson-label {
-  font-size: calc(8.5pt * var(--ts));
+  font-size: calc(7.3pt * var(--ts));
   font-weight: 700;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -439,7 +439,7 @@
 /* title-md */
 .lesson h3 {
   margin: 0 0 0.05in;
-  font-size: calc(15pt * var(--ts));
+  font-size: calc(12.5pt * var(--ts));
   font-weight: 700;
   line-height: 1.14;
   letter-spacing: -0.016em;
@@ -447,7 +447,7 @@
 }
 
 .lesson-summary {
-  font-size: calc(11.5pt * var(--ts));
+  font-size: calc(9.8pt * var(--ts));
   line-height: 1.3;
   color: var(--body);
   flex: 1;
@@ -460,7 +460,7 @@
   display: flex;
   justify-content: space-between;
   gap: 0.07in;
-  font-size: calc(9.5pt * var(--ts));
+  font-size: calc(8.2pt * var(--ts));
   font-weight: 500;
   color: var(--muted-soft);
 }
@@ -470,53 +470,53 @@
 /* --- leader note -------------------------------------------------------- */
 
 .leader {
-  margin-top: 0.14in;
+  margin-top: 0.09in;
   padding-top: 0;
   display: grid;
   grid-template-columns: 1.45fr 1fr;
-  gap: 0.15in;
+  gap: 0.13in;
   align-items: start;
 }
 
 .leader-note p {
-  font-size: calc(12pt * var(--ts));
+  font-size: calc(10pt * var(--ts));
   line-height: 1.38;
   color: var(--body);
 }
 .leader-sign {
   margin-top: 0.045in;
-  font-size: calc(12pt * var(--ts));
+  font-size: calc(10pt * var(--ts));
   font-weight: 600;
   color: var(--ink);
 }
 
 /* feature-card-cream */
 .service {
-  padding: 0.1in 0.12in;
+  padding: 0.09in 0.1in;
   background: var(--surface-card);
   border-radius: var(--r-lg);
 }
 .service .eyebrow { color: var(--muted); }
 .service h3 {
   margin: 0.045in 0;
-  font-size: calc(14pt * var(--ts));
+  font-size: calc(12pt * var(--ts));
   font-weight: 700;
   line-height: 1.18;
   letter-spacing: -0.016em;
   color: var(--ink);
 }
-.service p { font-size: calc(11.5pt * var(--ts)); line-height: 1.34; color: var(--body); }
+.service p { font-size: calc(9.8pt * var(--ts)); line-height: 1.34; color: var(--body); }
 
 /* --- page footer -------------------------------------------------------- */
 
 .page-foot {
   margin-top: auto;
-  padding-top: 0.07in;
+  padding-top: 0.055in;
   border-top: 1px solid var(--hairline);
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  font-size: calc(8.8pt * var(--ts));
+  font-size: calc(7.5pt * var(--ts));
   font-weight: 500;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -526,22 +526,22 @@
 
 /* --- member highlight — feature-card-lavender ---------------------------- */
 
-.highlight { margin-top: 0.12in; flex-shrink: 0; }
+.highlight { margin-top: 0.09in; flex-shrink: 0; }
 
 .highlight-body {
   display: grid;
-  grid-template-columns: 1.85in 1fr;
+  grid-template-columns: 1.5in 1fr;
   gap: 0.16in;
   align-items: start;
   background: var(--tint-3);
   border-radius: var(--r-xl);
-  padding: 0.16in 0.18in;
+  padding: 0.11in 0.13in;
   color: var(--ink);
 }
 
 .portrait {
-  width: 1.85in;
-  height: 2.15in;
+  width: 1.5in;
+  height: 1.75in;
   object-fit: cover;
   display: block;
   border-radius: var(--r-lg);
@@ -549,14 +549,14 @@
 }
 
 .portrait-fallback {
-  width: 1.85in;
-  height: 2.15in;
+  width: 1.5in;
+  height: 1.75in;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--canvas);
   border-radius: var(--r-lg);
-  font-size: calc(46pt * var(--ts));
+  font-size: calc(38pt * var(--ts));
   font-weight: 500;
   letter-spacing: -0.04em;
   color: var(--lavender);
@@ -565,14 +565,14 @@
 
 .highlight h3 {
   margin: 0 0 0.025in;
-  font-size: calc(24pt * var(--ts));
+  font-size: calc(20pt * var(--ts));
   font-weight: 600;
   line-height: 1.04;
   letter-spacing: -0.03em;
   color: var(--ink);
 }
 .highlight-role {
-  font-size: calc(9pt * var(--ts));
+  font-size: calc(7.8pt * var(--ts));
   font-weight: 600;
   letter-spacing: 0.13em;
   text-transform: uppercase;
@@ -580,22 +580,22 @@
   margin-bottom: 0.06in;
 }
 .highlight-headline {
-  font-size: calc(14pt * var(--ts));
+  font-size: calc(12pt * var(--ts));
   font-weight: 700;
-  line-height: 1.28;
+  line-height: 1.24;
   letter-spacing: -0.016em;
   color: var(--ink);
-  margin-bottom: 0.055in;
+  margin-bottom: 0.04in;
 }
-.highlight-text { font-size: calc(12pt * var(--ts)); line-height: 1.38; color: rgba(10, 10, 10, 0.86); }
+.highlight-text { font-size: calc(10pt * var(--ts)); line-height: 1.3; color: rgba(10, 10, 10, 0.86); }
 
 /* button-on-color: a canvas block sitting over the saturated card */
 .highlight-quote {
-  margin: 0.08in 0;
+  margin: 0.055in 0;
   padding: 0.1in 0.11in;
   background: var(--canvas);
   border-radius: var(--r-md);
-  font-size: calc(13.5pt * var(--ts));
+  font-size: calc(11.5pt * var(--ts));
   font-weight: 500;
   line-height: 1.32;
   letter-spacing: -0.012em;
@@ -605,15 +605,15 @@
 .facts {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.045in 0.13in;
-  margin-top: 0.075in;
-  padding-top: 0.075in;
+  gap: 0.04in 0.12in;
+  margin-top: 0.06in;
+  padding-top: 0.06in;
   border-top: 1px solid rgba(10, 10, 10, 0.14);
 }
-.fact { font-size: calc(11.5pt * var(--ts)); line-height: 1.28; }
+.fact { font-size: calc(9.8pt * var(--ts)); line-height: 1.28; }
 .fact .fact-label {
   display: block;
-  font-size: calc(8.5pt * var(--ts));
+  font-size: calc(7.3pt * var(--ts));
   font-weight: 600;
   letter-spacing: 0.11em;
   text-transform: uppercase;
@@ -628,21 +628,21 @@
 
 /* --- activity — feature-card-ochre --------------------------------------- */
 
-.activity { margin-top: 0.12in; flex-shrink: 0; }
+.activity { margin-top: 0.09in; flex-shrink: 0; }
 
 .activity-panel {
-  padding: 0.15in 0.17in;
+  padding: 0.1in 0.12in;
   background: var(--tint-4);
   border-radius: var(--r-xl);
   color: var(--ink);
   display: grid;
-  grid-template-columns: 1fr 2in;
+  grid-template-columns: 1fr 1.7in;
   gap: 0.16in;
 }
 
 .activity h3 {
   margin: 0 0 0.04in;
-  font-size: calc(20pt * var(--ts));
+  font-size: calc(17pt * var(--ts));
   font-weight: 600;
   line-height: 1.06;
   letter-spacing: -0.026em;
@@ -652,10 +652,10 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.045in;
-  margin-bottom: 0.07in;
+  margin-bottom: 0.055in;
 }
 .activity-meta span {
-  font-size: calc(8.8pt * var(--ts));
+  font-size: calc(7.5pt * var(--ts));
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -664,9 +664,9 @@
   border-radius: var(--r-pill);
   padding: 0.025in 0.075in;
 }
-.activity-blurb { font-size: calc(12pt * var(--ts)); line-height: 1.38; color: rgba(10, 10, 10, 0.8); }
+.activity-blurb { font-size: calc(10pt * var(--ts)); line-height: 1.32; color: rgba(10, 10, 10, 0.8); }
 .activity-purpose {
-  font-size: calc(13.5pt * var(--ts));
+  font-size: calc(11.5pt * var(--ts));
   font-weight: 700;
   line-height: 1.26;
   letter-spacing: -0.016em;
@@ -677,16 +677,16 @@
 .bring {
   background: rgba(255, 250, 240, 0.66);
   border-radius: var(--r-md);
-  padding: 0.1in 0.12in;
+  padding: 0.09in 0.1in;
 }
 .bring .eyebrow { color: rgba(10, 10, 10, 0.6); }
 .bring ul { list-style: none; margin: 0.05in 0 0; padding: 0; }
 .bring li {
   position: relative;
   padding-left: 0.145in;
-  margin-bottom: 0.045in;
-  font-size: calc(11.5pt * var(--ts));
-  line-height: 1.32;
+  margin-bottom: 0.032in;
+  font-size: calc(9.8pt * var(--ts));
+  line-height: 1.28;
   color: rgba(10, 10, 10, 0.8);
 }
 .bring li:last-child { margin-bottom: 0; }
@@ -702,20 +702,34 @@
 }
 .activity-note {
   grid-column: 1 / -1;
-  padding-top: 0.08in;
+  padding-top: 0.06in;
   border-top: 1px solid rgba(10, 10, 10, 0.16);
-  font-size: calc(10.5pt * var(--ts));
+  font-size: calc(8.8pt * var(--ts));
   line-height: 1.38;
   color: rgba(10, 10, 10, 0.74);
 }
 
-/* --- bottom two columns ------------------------------------------------- */
+/* --- calendar and birthdays --------------------------------------------- */
 
-.columns {
-  margin-top: 0.12in;
+.calendar-block { margin-top: 0.09in; flex-shrink: 0; }
+/* A dated row is one line whatever the column width, so the birthdays take
+   the right-hand half rather than leaving it empty. */
+.calendar-body {
   display: grid;
-  grid-template-columns: 1.12fr 1fr;
-  gap: 0.2in;
+  grid-template-columns: 1.75fr 1fr;
+  gap: 0.14in;
+  align-items: start;
+}
+.calendar-body .birthdays { margin-top: 0; }
+
+/* --- for you ------------------------------------------------------------- */
+
+.fun { margin-top: 0.09in; flex-shrink: 0; }
+.fun-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.08in 0.13in;
+  align-items: start;
 }
 
 .cal-list {
@@ -724,22 +738,22 @@
   background: var(--canvas);
   border: 1px solid var(--hairline);
   border-radius: var(--r-lg);
-  padding: 0.06in 0.11in;
+  padding: 0.05in 0.09in;
 }
 .cal-row {
   display: grid;
-  grid-template-columns: 1.25in 1fr;
+  grid-template-columns: 1.5in 1fr;
   gap: 0.08in;
-  padding: 0.045in 0;
+  padding: 0.034in 0;
   border-bottom: 1px solid var(--hairline-soft);
-  font-size: calc(11.5pt * var(--ts));
+  font-size: calc(9.8pt * var(--ts));
   line-height: 1.28;
 }
 .cal-row:last-child { border-bottom: 0; }
 .cal-row .cal-date {
   font-weight: 600;
   color: var(--muted);
-  font-size: calc(9.5pt * var(--ts));
+  font-size: calc(8.2pt * var(--ts));
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -748,7 +762,7 @@
 
 .birthdays {
   margin-top: 0.1in;
-  padding: 0.11in 0.12in;
+  padding: 0.09in 0.1in;
   background: var(--surface-card);
   border-radius: var(--r-lg);
 }
@@ -786,7 +800,7 @@
   align-items: baseline;
   gap: 0.05in;
   padding: 0.026in 0;
-  font-size: calc(11.5pt * var(--ts));
+  font-size: calc(9.8pt * var(--ts));
   line-height: 1.25;
   border-bottom: 1px dotted color-mix(in srgb, var(--cal-birthday) 30%, transparent);
 }
@@ -809,28 +823,28 @@
 }
 .bd-name { color: var(--ink); font-weight: 500; }
 
-/* The time under the date in a calendar row. */
+/* The time beside the date in a calendar row. */
 .cal-time {
-  display: block;
-  font-size: calc(8.8pt * var(--ts));
+  display: inline;
+  margin-left: 0.035in;
+  font-size: calc(7.5pt * var(--ts));
   font-weight: 500;
   letter-spacing: 0;
   text-transform: none;
   color: var(--muted-soft);
-  margin-top: 0.008in;
 }
 
 .empty-hint {
-  font-size: calc(10pt * var(--ts));
+  font-size: calc(8.5pt * var(--ts));
   color: var(--muted-soft);
 }
 
-.fun-block { margin-bottom: 0.1in; }
+.fun-block { margin-bottom: 0; }
 .fun-block:last-child { margin-bottom: 0; }
 
 /* feature-card-pink */
 .quote-card {
-  padding: 0.12in 0.13in;
+  padding: 0.1in 0.11in;
   background: var(--pink);
   border-radius: var(--r-lg);
   color: var(--on-dark);
@@ -838,7 +852,7 @@
 .quote-card .eyebrow { color: rgba(255, 255, 255, 0.75); }
 .quote-card blockquote {
   margin: 0.045in 0;
-  font-size: calc(14pt * var(--ts));
+  font-size: calc(12pt * var(--ts));
   font-weight: 500;
   line-height: 1.28;
   letter-spacing: -0.016em;
@@ -846,7 +860,7 @@
 }
 .quote-card cite {
   font-style: normal;
-  font-size: calc(8.8pt * var(--ts));
+  font-size: calc(7.5pt * var(--ts));
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -854,25 +868,25 @@
 }
 
 .qa-q {
-  font-size: calc(13pt * var(--ts));
+  font-size: calc(11pt * var(--ts));
   font-weight: 700;
   line-height: 1.28;
   letter-spacing: -0.016em;
   color: var(--ink);
   margin-bottom: 0.04in;
 }
-.qa-a { font-size: calc(11.5pt * var(--ts)); line-height: 1.36; color: var(--body); }
+.qa-a { font-size: calc(9.8pt * var(--ts)); line-height: 1.3; color: var(--body); }
 
 /* mint accent card */
 .challenge {
-  padding: 0.11in 0.12in;
+  padding: 0.09in 0.1in;
   background: var(--tint-2);
   border-radius: var(--r-lg);
   color: var(--ink);
 }
 .challenge .eyebrow { color: rgba(10, 10, 10, 0.6); }
 .challenge p {
-  font-size: calc(12pt * var(--ts));
+  font-size: calc(10pt * var(--ts));
   font-weight: 500;
   line-height: 1.38;
   color: var(--ink);
@@ -880,7 +894,7 @@
 }
 
 .progress-prompt {
-  font-size: calc(11.5pt * var(--ts));
+  font-size: calc(9.8pt * var(--ts));
   line-height: 1.4;
   color: var(--body);
   margin-top: 0.04in;
@@ -888,7 +902,7 @@
 .progress-lines { margin-top: 0.065in; }
 .progress-lines span {
   display: block;
-  height: 0.16in;
+  height: 0.1in;
   border-bottom: 1px solid var(--hairline);
 }
 
@@ -970,7 +984,7 @@
 
 @media screen and (max-width: 820px) {
   .page {
-    --ts: 1.25;
+    --ts: 1.5;
     width: 100%;
     height: auto;
     min-height: 0;
@@ -986,7 +1000,8 @@
   .leader,
   .highlight-body,
   .activity-panel,
-  .columns,
+  .calendar-body,
+  .fun-grid,
   .facts {
     grid-template-columns: 1fr;
     gap: 14px;
@@ -1027,12 +1042,12 @@
   .leader,
   .highlight,
   .activity,
-  .columns {
+  .calendar-block,
+  .fun {
     margin-top: 22px;
   }
 
   .leader { padding-top: 0; }
-  .columns { flex: none; }
   .page-foot { margin-top: 24px; padding-top: 10px; }
 
   /* The sheet is no longer a fixed rectangle on a phone. */
@@ -1096,7 +1111,7 @@
 }
 .cal-head span {
   text-align: center;
-  font-size: calc(7.5pt * var(--ts));
+  font-size: calc(6.5pt * var(--ts));
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1110,7 +1125,7 @@
 }
 
 .cal-day {
-  min-height: 0.4in;
+  min-height: 0.34in;
   border-radius: 0.035in;
   border: 1px dotted var(--hairline);
   background: rgba(255, 255, 255, 0.5);
@@ -1124,7 +1139,7 @@
 .cal-day.is-empty { border-color: transparent; background: transparent; }
 
 .cal-num {
-  font-size: calc(8.5pt * var(--ts));
+  font-size: calc(7.3pt * var(--ts));
   font-weight: 600;
   color: var(--muted);
   line-height: 1;
@@ -1160,7 +1175,7 @@
   display: flex;
   align-items: center;
   gap: 0.035in;
-  font-size: calc(8pt * var(--ts));
+  font-size: calc(7pt * var(--ts));
   font-weight: 600;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -1209,7 +1224,7 @@
 
 .cal-pop-day {
   display: block;
-  font-size: calc(8.5pt * var(--ts));
+  font-size: calc(7.3pt * var(--ts));
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -1221,7 +1236,7 @@
   display: flex;
   align-items: flex-start;
   gap: 0.045in;
-  font-size: calc(10.5pt * var(--ts));
+  font-size: calc(8.8pt * var(--ts));
   line-height: 1.3;
   color: var(--ink);
   margin-bottom: 0.025in;
@@ -1279,7 +1294,7 @@
 /* --- birthday list, larger and colour-coded ------------------------------ */
 
 .birthday-list li {
-  font-size: calc(13pt * var(--ts));
+  font-size: calc(11pt * var(--ts));
   padding: 0.028in 0;
 }
 .bd-name {

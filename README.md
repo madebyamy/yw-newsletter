@@ -36,15 +36,16 @@ September 2026 is filled in from the Church's youth curriculum outline —
 | Header & Masthead | set once, then left alone |
 | Monthly Theme | from the For the Strength of Youth chapter |
 | Monthly Scriptures | featured verse, a verse to memorize, supporting refs |
+| Calendar & Birthdays | dates and birthdays |
 | Weekly Lessons | one card per Sunday |
 | Leader's Note & Service | the presidency |
 | Member Highlight | one young woman each month |
 | Activity Spotlight | the midweek activity |
-| Calendar & Birthdays | dates and birthdays |
 | Fun & Personal Development | quote, a question from the girls, a challenge |
 
-They always run in that order. Which sheet each one lands on depends on how
-much has been written that month.
+They always run in that order. The calendar sits high on purpose, so the dates
+land on the first sheet where the girls will see them. Which sheet each of the
+others falls on depends on how much has been written that month.
 
 The structure is identical every month, so the girls always know where to look.
 Only the contents change.
@@ -61,14 +62,19 @@ file next to `src/data/september2026.js` and register it in the `SEEDS` map in
 
 ## Type size and page count
 
-Body text is 12pt, with headings stepped up from there and set bold. That is a
-size the girls can actually read on paper, and it is why an issue runs to
-several sheets rather than two — September, filled in, comes to five pages.
+Body text is 10pt, with headings stepped up from there and set bold.
 
-The page count follows the writing. Shorter sections mean fewer sheets, and
-turning a block off for the month (see below) can drop one. Because sections
-are never split down the middle, a page sometimes ends early rather than
-breaking a card across the fold.
+Two pages and readable type do not both fit. All nine sections at 10pt come to
+about three sheets; squeezing them onto two needs roughly a quarter less on the
+page, which is content, not spacing. The original two-page issue only fitted
+because it was set at 7.8pt.
+
+So the page count follows the writing. September, filled in, comes to three
+pages. Turning two of the longer blocks off — the Activity Spotlight and For
+You, say — brings it down to two. Because sections are never split down the
+middle, a page sometimes ends early rather than breaking a card across the
+fold; the sections are spread evenly across whatever sheets they need, so no
+page is left holding one lonely block.
 
 One section written longer than a whole sheet is the only thing that still
 cannot be placed. If that happens an orange warning appears under the page
@@ -144,7 +150,9 @@ its form drops the time and place, since a birthday has neither.
 
 Dates and times use real pickers. The year on a birthday is ignored; only the
 day matters. The list reads in date order however it was typed in, with the
-time under the date.
+time beside the date, and the birthdays sit alongside it rather than under it —
+a dated row is one line however wide the column is, so a full width list would
+only waste the other half.
 
 Birthdays are listed in date order at a larger size, and each girl's name has
 its own colour — worked out from her name, so it stays the same month to month.
@@ -157,8 +165,8 @@ its own colour — worked out from her name, so it stays the same month to month
   they fall. The activities are named under the grid; birthdays are not
   repeated there, since they have their own block.
 
-The grid sits in the same column as the list, so switching between them does
-not change what else fits on the page.
+The month grid is taller than the list, so choosing it can push the calendar
+onto the second sheet. The list is the default.
 
 A cell that narrow can only hold coloured dots, so hovering a day shows a small
 panel listing what is on it. Days also carry a plain tooltip, which is what a
