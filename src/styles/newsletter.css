@@ -403,6 +403,11 @@
   gap: 0.08in;
 }
 
+/* A month with five Sundays would otherwise end on a lone card beside a hole.
+   Across the full width it reads as a closing note instead — and costs less
+   height, since the text stops wrapping. */
+.lesson:last-child:nth-child(odd) { grid-column: 1 / -1; }
+
 .lesson {
   background: var(--canvas);
   border: 1px solid var(--hairline);
@@ -437,10 +442,12 @@
   padding: 0.025in 0.075in;
   white-space: nowrap;
 }
-.lesson:nth-child(1) .lesson-label { background: var(--pill-1); color: var(--pill-1-fg, #fff); }
-.lesson:nth-child(2) .lesson-label { background: var(--pill-2); color: var(--pill-2-fg, var(--ink)); }
-.lesson:nth-child(3) .lesson-label { background: var(--pill-3); color: var(--pill-3-fg, var(--ink)); }
-.lesson:nth-child(4) .lesson-label { background: var(--pill-4); color: var(--pill-4-fg, #fff); }
+/* Cycling, not fixed: a month with a fifth Sunday has five cards, and the
+   fifth would otherwise come out with no pill at all. */
+.lesson:nth-child(4n + 1) .lesson-label { background: var(--pill-1); color: var(--pill-1-fg, #fff); }
+.lesson:nth-child(4n + 2) .lesson-label { background: var(--pill-2); color: var(--pill-2-fg, var(--ink)); }
+.lesson:nth-child(4n + 3) .lesson-label { background: var(--pill-3); color: var(--pill-3-fg, var(--ink)); }
+.lesson:nth-child(4n + 4) .lesson-label { background: var(--pill-4); color: var(--pill-4-fg, #fff); }
 
 /* title-md */
 .lesson h3 {

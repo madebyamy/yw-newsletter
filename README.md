@@ -4,9 +4,24 @@ A monthly newsletter for young women ages 12–18. One shared link that several
 leaders can edit, and an 8.5×11 handout that prints or saves as a PDF straight
 from the browser.
 
-September 2026 is filled in from the Church's youth curriculum outline —
-*You Are Blessed by Priesthood Keys and Authority* (For the Strength of Youth,
-46–49).
+September, October and November 2026 are filled in from the Church's youth
+Sunday curriculum — chapters 9, 10 and 11 of *For the Strength of Youth: A
+Guide for Making Choices*:
+
+| Month | Chapter | Guide |
+|---|---|---|
+| September 2026 | You are blessed by priesthood keys and authority | 46–49 |
+| October 2026 | Your body is sacred | 50–56 |
+| November 2026 | Truth will make you free | 58–61 |
+
+Theme, scriptures and the Sunday cards come from the month's outlines at
+churchofjesuschrist.org/study/ftsoy. The lesson summaries are written in our
+own words as a preview for the girls — the outlines themselves live in the
+Gospel Library. The leader's note, service focus and calendar are left as
+templates to fill in.
+
+November has five Sundays. The fifth is the bishopric's to direct and nothing
+had been published for it, so that card says so rather than guessing.
 
 **Setup instructions live in [SETUP.md](SETUP.md).**
 
@@ -55,9 +70,9 @@ Step the month arrow forward. The layout and section structure carry over; the
 fields start empty apart from the month label. Fill them in from that month's
 curriculum outline.
 
-To pre-fill a month with real curriculum content the way September is, add a
-file next to `src/data/september2026.js` and register it in the `SEEDS` map in
-`src/data/issues.js`.
+To pre-fill a month with real curriculum content the way these three are, copy
+`src/data/october2026.js` as a starting point and register the new file in the
+`SEEDS` map in `src/data/issues.js`.
 
 ## Type size and page count
 

@@ -105,7 +105,7 @@ export default {
     from: 'The Young Women Presidency',
     body:
       'Replace this note each month with a few sentences of your own — something you noticed about the girls, or why this theme matters to you. Three or four sentences is plenty; they read it more often than you would think.',
-    serviceTitle: 'Service Focus: Notice One Person',
+    serviceTitle: 'Notice One Person',
     serviceBody:
       'Pick one person this month who would not expect to hear from you — and reach out anyway. A note, a text, a seat saved on Sunday. Bring back what happened and we will share.',
   },

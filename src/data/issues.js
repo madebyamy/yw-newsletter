@@ -1,9 +1,13 @@
 import { SECTIONS, emptyValue, blankIssue } from './schema'
 import september2026 from './september2026'
+import october2026 from './october2026'
+import november2026 from './november2026'
 
 // Seeded issues. Add a month here once you have its curriculum outline.
 export const SEEDS = {
   '2026-09': september2026,
+  '2026-10': october2026,
+  '2026-11': november2026,
 }
 
 const MONTH_NAMES = [
