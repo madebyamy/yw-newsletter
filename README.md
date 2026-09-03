@@ -1,8 +1,8 @@
 # Young Women Newsletter
 
 A monthly newsletter for young women ages 12–18. One shared link that several
-leaders can edit, and a two-page 8.5×11 sheet that prints or saves as a PDF
-straight from the browser.
+leaders can edit, and an 8.5×11 handout that prints or saves as a PDF straight
+from the browser.
 
 September 2026 is filled in from the Church's youth curriculum outline —
 *You Are Blessed by Priesthood Keys and Authority* (For the Strength of Youth,
@@ -21,24 +21,30 @@ September 2026 is filled in from the Church's youth curriculum outline —
   working at the same time never overwrite each other.
 - **Who wrote what.** Every section shows the name of whoever last changed it,
   right on the printed page.
-- **Prints properly.** *Print / Save PDF* produces exactly two 8.5×11 pages,
-  designed to be run double-sided.
+- **Prints properly.** *Print / Save PDF* produces 8.5×11 pages, designed to be
+  run double-sided.
+- **Nothing gets cut off.** The sections are laid out and measured, then dealt
+  onto as many sheets as they need. A section that no longer fits moves to the
+  next page by itself.
 - **Month by month.** The arrows step to any month. Each month is its own
   issue; past months stay readable at their own link.
 
 ## The nine sections
 
-| Page | Section | Who usually owns it |
-|---|---|---|
-| 1 | Header & Masthead | set once, then left alone |
-| 1 | Monthly Theme | from the For the Strength of Youth chapter |
-| 1 | Monthly Scriptures | featured verse, a verse to memorize, supporting refs |
-| 1 | Weekly Lessons | one card per Sunday |
-| 1 | Leader's Note & Service | the presidency |
-| 2 | Member Highlight | one young woman each month |
-| 2 | Activity Spotlight | the midweek activity |
-| 2 | Calendar & Birthdays | dates and birthdays |
-| 2 | Fun & Personal Development | quote, a question from the girls, a challenge |
+| Section | Who usually owns it |
+|---|---|
+| Header & Masthead | set once, then left alone |
+| Monthly Theme | from the For the Strength of Youth chapter |
+| Monthly Scriptures | featured verse, a verse to memorize, supporting refs |
+| Weekly Lessons | one card per Sunday |
+| Leader's Note & Service | the presidency |
+| Member Highlight | one young woman each month |
+| Activity Spotlight | the midweek activity |
+| Calendar & Birthdays | dates and birthdays |
+| Fun & Personal Development | quote, a question from the girls, a challenge |
+
+They always run in that order. Which sheet each one lands on depends on how
+much has been written that month.
 
 The structure is identical every month, so the girls always know where to look.
 Only the contents change.
@@ -53,11 +59,21 @@ To pre-fill a month with real curriculum content the way September is, add a
 file next to `src/data/september2026.js` and register it in the `SEEDS` map in
 `src/data/issues.js`.
 
-## Keeping it on two pages
+## Type size and page count
 
-Each sheet clips anything past 11 inches. If a section grows too long, an
-orange warning appears under the page telling you how far over it runs — trim
-before printing. The warning is on screen only; it never prints.
+Body text is 12pt, with headings stepped up from there and set bold. That is a
+size the girls can actually read on paper, and it is why an issue runs to
+several sheets rather than two — September, filled in, comes to five pages.
+
+The page count follows the writing. Shorter sections mean fewer sheets, and
+turning a block off for the month (see below) can drop one. Because sections
+are never split down the middle, a page sometimes ends early rather than
+breaking a card across the fold.
+
+One section written longer than a whole sheet is the only thing that still
+cannot be placed. If that happens an orange warning appears under the page
+saying how far over it runs, so it can be trimmed before printing. The warning
+is on screen only; it never prints.
 
 ## Printing
 
@@ -175,10 +191,10 @@ always needed or never printed.
 
 ## Reading it on a phone
 
-Below 820px the sheet stops pretending to be paper: it reflows to one column
-at readable size instead of shrinking an 8.5in page onto a 6cm screen. Above
-that width, and when printing, nothing changes — the fixed two-page layout is
-exactly as it was.
+Below 820px the sheet stops pretending to be paper: it reflows to one
+continuous column instead of shrinking an 8.5in page onto a 6cm screen, and
+the page breaks fall away with it — there is nothing to turn over on a phone.
+Above that width, and when printing, the sheets are laid out as normal.
 
 ## Backgrounds and colours
 

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { PageOne, PageTwo } from './components/Newsletter'
+import { Sheets } from './components/Newsletter'
 import Editor from './components/Editor'
 import { SEEDS, currentMonthKey, monthLabel, normalizeIssue, shiftMonth } from './data/issues'
 import { listMonths, loadIssue, saveSection, verifyPasscode, MODE } from './lib/store'
@@ -185,21 +185,6 @@ export default function App() {
     ro.observe(el)
     return () => ro.disconnect()
   }, [])
-
-  // Each sheet clips anything past 11in, so warn while there is still time to
-  // trim rather than letting a sentence vanish on the way to the printer.
-  const [overflow, setOverflow] = useState([])
-
-  useLayoutEffect(() => {
-    const el = previewRef.current
-    if (!el) return
-    const next = isPhone
-      ? []
-      : [...el.querySelectorAll('.page')].map((p) => Math.max(0, p.scrollHeight - p.clientHeight))
-    setOverflow((prev) =>
-      prev.length === next.length && prev.every((v, i) => v === next[i]) ? prev : next,
-    )
-  }, [issue, loading, scale, isPhone, calendarOverride])
 
   // ---------------------------------------------------------------- actions
 
@@ -414,28 +399,17 @@ export default function App() {
         </div>
       ) : (
         <main className="preview" ref={previewRef}>
-          {[PageOne, PageTwo].map((Page, i) => (
-            <div key={i} className="sheet">
-              <div className="page-frame" style={frameStyle}>
-                <div className="page-scale" style={pageStyle}>
-                  <Page
-                    issue={issue}
-                    meta={meta}
-                    monthKey={monthKey}
-                    leaderMode={leaderMode}
-                    viewOverride={calendarOverride}
-                    onToggleCalendarView={toggleCalendarView}
-                  />
-                </div>
-              </div>
-              {overflow[i] > 0 && (
-                <p className="overflow-warn no-print">
-                  Page {i + 1} runs past the sheet by about {Math.round(overflow[i] / 96 * 25.4)}mm.
-                  Trim some text or the bottom will be cut off when it prints.
-                </p>
-              )}
-            </div>
-          ))}
+          <Sheets
+            issue={issue}
+            meta={meta}
+            monthKey={monthKey}
+            leaderMode={leaderMode}
+            viewOverride={calendarOverride}
+            onToggleCalendarView={toggleCalendarView}
+            isPhone={isPhone}
+            frameStyle={frameStyle}
+            pageStyle={pageStyle}
+          />
         </main>
       )}
 

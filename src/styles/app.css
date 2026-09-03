@@ -199,6 +199,31 @@ body {
 }
 
 .sheet { display: flex; flex-direction: column; align-items: center; }
+/* A wrapper only so the sheets can be measured together; it must not become
+   a box of its own or the preview column would change shape. */
+.sheets { display: contents; }
+
+/* Where the sheets are worked out. The whole newsletter is laid out once at
+   its true 8.5in width with no page breaks, measured, and then dealt onto as
+   many sheets as it needs. Offscreen rather than hidden, because an element
+   with display:none has no height to read. */
+.print-rig {
+  position: absolute;
+  left: -20000px;
+  top: 0;
+  width: 8.5in;
+  visibility: hidden;
+  pointer-events: none;
+}
+.print-rig .page {
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+  box-shadow: none !important;
+}
+@media print {
+  .print-rig { display: none !important; }
+}
 
 .page-frame {
   position: relative;
