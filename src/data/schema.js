@@ -44,17 +44,6 @@ export const SECTIONS = [
     ],
   },
   {
-    id: 'theme',
-    label: 'Monthly Theme',
-    hint: 'Comes from the For the Strength of Youth chapter for this month.',
-    fields: [
-      { key: 'title', label: 'Theme title', type: 'text' },
-      { key: 'source', label: 'Source / page reference', type: 'text' },
-      { key: 'intro', label: 'Intro paragraph', type: 'textarea', rows: 4 },
-      { key: 'questions', label: 'Questions to think about', type: 'list' },
-    ],
-  },
-  {
     id: 'calendar',
     label: 'Calendar & Birthdays',
     hint: 'Everything happening this month, plus birthdays to celebrate.',
@@ -91,6 +80,17 @@ export const SECTIONS = [
       { key: 'events', label: 'Activities (old format)', type: 'internal' },
       { key: 'birthdays', label: 'Birthdays (old format)', type: 'internal' },
       { key: 'entriesMigrated', label: 'Converted', type: 'internal' },
+    ],
+  },
+  {
+    id: 'theme',
+    label: 'Monthly Theme',
+    hint: 'Comes from the For the Strength of Youth chapter for this month.',
+    fields: [
+      { key: 'title', label: 'Theme title', type: 'text' },
+      { key: 'source', label: 'Source / page reference', type: 'text' },
+      { key: 'intro', label: 'Intro paragraph', type: 'textarea', rows: 4 },
+      { key: 'questions', label: 'Questions to think about', type: 'list' },
     ],
   },
   {
@@ -167,8 +167,8 @@ export const SECTION_IDS = SECTIONS.map((s) => s.id)
 // Blocks that can be switched off for a month. The masthead stays (it is the
 // header), and the two settings sections are not printed at all.
 export const HIDEABLE = [
-  { id: 'theme', label: 'Monthly Theme' },
   { id: 'calendar', label: 'Calendar & Birthdays' },
+  { id: 'theme', label: 'Monthly Theme' },
   { id: 'scriptures', label: 'Monthly Scriptures' },
   { id: 'lessons', label: 'Sundays This Month' },
   { id: 'leader', label: 'A Note For You & Service Focus' },

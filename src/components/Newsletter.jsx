@@ -324,34 +324,11 @@ export function buildBlocks({ issue, meta, monthKey, leaderMode, viewOverride, o
     if (node) out.push({ key, node })
   }
 
-  if (!hidden.has('theme') && (t?.title || t?.intro)) {
-    add(
-      'theme',
-      <section className="theme" data-block="theme">
-        <div className="eyebrow">This Month’s Theme</div>
-        <h1>{t.title}</h1>
-        {t.source && <div className="theme-source">{t.source}</div>}
-        <div className="theme-intro">
-          <Paragraphs text={t.intro} />
-        </div>
-        {questions.length > 0 && (
-          <div className="theme-questions">
-            {questions.slice(0, 3).map((q, i) => (
-              <div key={i} className="theme-question">
-                {q}
-              </div>
-            ))}
-          </div>
-        )}
-      </section>,
-    )
-  }
-
-  // Second on the sheet, right under the theme. High enough that page one
-  // keeps the dates even when a month runs long: whatever has to move onto
-  // the next sheet, it will be something below this. The list and the
-  // birthdays run side by side — a dated row is one line however wide the
-  // column is, so a full width list would only waste the right-hand half.
+  // First under the masthead. Being at the top it is the last thing a long
+  // month could push off page one — whatever has to move onto the next sheet
+  // will be something below it. The list and the birthdays run side by side:
+  // a dated row is one line however wide the column is, so a full width list
+  // would only waste the right-hand half.
   if (calendarShown) {
     add(
       'calendar',
@@ -397,6 +374,29 @@ export function buildBlocks({ issue, meta, monthKey, leaderMode, viewOverride, o
 
           <Birthdays birthdays={birthdays} leaderMode={leaderMode} />
         </div>
+      </section>,
+    )
+  }
+
+  if (!hidden.has('theme') && (t?.title || t?.intro)) {
+    add(
+      'theme',
+      <section className="theme" data-block="theme">
+        <div className="eyebrow">This Month’s Theme</div>
+        <h1>{t.title}</h1>
+        {t.source && <div className="theme-source">{t.source}</div>}
+        <div className="theme-intro">
+          <Paragraphs text={t.intro} />
+        </div>
+        {questions.length > 0 && (
+          <div className="theme-questions">
+            {questions.slice(0, 3).map((q, i) => (
+              <div key={i} className="theme-question">
+                {q}
+              </div>
+            ))}
+          </div>
+        )}
       </section>,
     )
   }

@@ -34,16 +34,17 @@ September 2026 is filled in from the Church's youth curriculum outline —
 | Section | Who usually owns it |
 |---|---|
 | Header & Masthead | set once, then left alone |
+| Calendar & Birthdays | dates and birthdays |
 | Monthly Theme | from the For the Strength of Youth chapter |
 | Monthly Scriptures | featured verse, a verse to memorize, supporting refs |
-| Calendar & Birthdays | dates and birthdays |
 | Weekly Lessons | one card per Sunday |
 | Leader's Note & Service | the presidency |
 | Fun & Personal Development | quote, a question from the girls, a challenge |
 
-They always run in that order. The calendar sits high on purpose, so the dates
-land on the first sheet where the girls will see them. Which sheet each of the
-others falls on depends on how much has been written that month.
+They always run in that order. The calendar leads on purpose: the dates are
+what the girls look for, and being first it is the last thing a long month
+could push off page one. Which sheet each of the others falls on depends on
+how much has been written that month.
 
 The structure is identical every month, so the girls always know where to look.
 Only the contents change.
@@ -69,8 +70,8 @@ Nothing breaks if it does. The sections are measured and dealt onto as many
 sheets as they need, so a long month simply gets another one rather than
 losing the bottom of a page.
 
-Two things keep it at two. The calendar sits second, high enough that whatever
-has to move is something below it, so page one keeps the dates. And the
+Two things keep it at two. The calendar comes first, so whatever has to move
+is something below it and page one keeps the dates. And the
 supporting references are their own small block, which is what actually moves
 when a month runs long — a big block there would strand half a page behind it.
 
